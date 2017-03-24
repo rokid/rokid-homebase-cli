@@ -1,0 +1,24 @@
+{
+  "name": "rhome",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cli-table": "^0.3.1",
+    "commander": "^2.9.0",
+    "inquirer": "^3.0.6",
+    "lowdb": "^0.16.0"
+  },
+  "bin": {
+    "rhome": "rhome.js"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {},
+  "description": ""
+}

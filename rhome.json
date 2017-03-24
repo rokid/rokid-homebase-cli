@@ -1,0 +1,17 @@
+{
+  "sessions": [
+    {
+      "endpoint": "http://1231",
+      "name": "lifesmart",
+      "userAuth":{}
+    }
+  ],
+  "devices": [
+    {
+      "sessionName": "lifesmart",
+      "deviceId": "",
+      "name": ""
+    }
+  ],
+  "currentSession": ''
+}
