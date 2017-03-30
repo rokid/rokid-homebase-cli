@@ -1,0 +1,69 @@
+{
+  "description": "description of a standard rokid homebase device's actions",
+  "type": "object",
+  "properties": {
+    "switch": {
+      "type": "string",
+      "enum": [
+        "on",
+        "off",
+        "stop"
+      ]
+    },
+    "color": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 16777215
+    },
+    "brightness": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "manual",
+        "cool",
+        "heat",
+        "dry",
+        "fan",
+        "silent",
+        "energy",
+        "sleep"
+      ]
+    },
+    "swing_mode": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "on",
+        "off",
+        "horizon",
+        "horizon.off",
+        "vertical",
+        "vertical.off"
+      ]
+    },
+    "volume": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "channel": {
+      "type": "number",
+      "minimum": 0
+    },
+    "humidity": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "temperature": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "description": "detail validation of list-api",
+  "allOf":[
+    {
+      "$ref": "api-common"
+    },
+    {
+      "type": "object",
+      "property":{
+        "data":{
+          "type": "object",
+          "property":{
+            "$ref": "device"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "description": "description of a standard rokid homebase device's actions",
+  "type": "object",
+  "properties": {
+    "switch": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "on",
+          "off",
+          "stop"
+        ]
+      }
+    },
+    "color": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "random",
+          "num"
+        ]
+      }
+    },
+    "brightness": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      }
+    },
+    "mode": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "manual",
+          "cool",
+          "heat",
+          "dry",
+          "fan",
+          "silent",
+          "energy",
+          "sleep"
+        ]
+      }
+    },
+    "position": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "up",
+          "down",
+          "num"
+        ]
+      }
+    },
+    "fanspeed": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "switch",
+          "num"
+        ]
+      }
+    },
+    "swing_mode": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "auto",
+          "on",
+          "off",
+          "horizon",
+          "horizon.off",
+          "vertical",
+          "vertical.off"
+        ]
+      }
+    },
+    "volume": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      }
+    },
+    "channel": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "next",
+          "prev",
+          "random",
+          "num"
+        ]
+      }
+    },
+    "humidity": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      }
+    },
+    "temperature": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "up",
+          "down",
+          "max",
+          "min",
+          "num"
+        ]
+      }
+    },
+    "ping": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "trigger"
+        ]
+      }
+    }
+  }
+}

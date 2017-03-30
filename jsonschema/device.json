@@ -1,0 +1,62 @@
+{
+  "description": "description of a standard rokid homebase device",
+  "type": "object",
+  "properties": {
+    "deviceId": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "curtain",
+        "light",
+        "irController",
+        "socket",
+        "switch",
+        "panel",
+        "tv",
+        "fan",
+        "remoteController",
+        "ac",
+        "airPurifier",
+        "scene",
+        "cleanBot",
+        "projector",
+        "dehumidifier",
+        "thermostat",
+        "humidifier",
+        "door"
+      ]
+    },
+    "actions": {
+      "$ref": "actions"
+    },
+    "state": {
+      "$ref": "state"
+    },
+    "offline": {
+      "type": "boolean",
+      "enum": [
+        true,
+        false
+      ]
+    },
+    "deviceInfo": {
+      "type": "object"
+    },
+    "parent": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "deviceId",
+    "name",
+    "type",
+    "actions",
+    "state",
+    "offline"
+  ]
+}

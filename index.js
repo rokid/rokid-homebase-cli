@@ -3,12 +3,34 @@ const program = require('commander');
 const pkg = require('./package.json');
 
 const low = require('lowdb');
-const config = require('./config');
+const config = require('./lib/config');
 
 const Table = require('cli-table');
 
 const serialize = value => JSON.stringify(value, null, 2);
 const db = low(config.dbPath, { format: { serialize }});
+
+const url = require('url');
+const request = require('./lib/requestAction');
+
+
+//about jsonschema
+const apiCommon = require('./jsonschema/api-common.json');
+const apiList = require('./jsonschema/api-list.json');
+const apiGet = require('./jsonschema/api-get.json');
+const apiExecute = require('./jsonschema/api-execute.json');
+const device = require('./jsonschema/device.json');
+const actions = require('./jsonschema/actions.json');
+const state = require('./jsonschema/state.json');
+
+const Validator = require('jsonschema').Validator;
+const v = new Validator();
+
+v.addSchema(apiCommon, 'api-common');
+v.addSchema(device, 'device');
+v.addSchema(actions, 'actions');
+v.addSchema(state, 'state');
+
 
 db.defaults({
   sessions: [],
@@ -115,7 +137,13 @@ function add() {
 
     sessions
       .push(session)
-      .write()
+      .write();
+
+    //default sessions[0] in use
+    if (!db.get('currentSession').value()) {
+      db.set('currentSession', answers.name)
+        .write();
+    }
   });
 }
 
@@ -129,6 +157,11 @@ function sessions() {
   const sessions = db.get('sessions').value();
   const currentSession = db.get('currentSession').value();
 
+  if (sessions.length === 0) {
+    console.log('please add first');
+    return;
+  }
+
   sessions.forEach(session => {
     if (session.name === currentSession) {
       sessionsTable.push([session.name, session.endpoint, session.userAuth.userId, session.userAuth.userToken, '*****'])
@@ -138,7 +171,6 @@ function sessions() {
   });
 
   console.log(sessionsTable.toString());
-
 }
 
 function use(name) {
@@ -157,6 +189,21 @@ function use(name) {
 }
 
 function list() {
+  const currentSession = db.get('currentSession').value();
+
+  if (!currentSession) {
+    console.log('please add first');
+    return;
+  }
+
+  const session = db.get('sessions').find({ name: currentSession }).value();
+
+  const listUrl = url.resolve(session.endpoint, 'list');
+  return request(listUrl, {
+    userAuth: session.userAuth
+  })
+    .then()
+
 
 }
 
