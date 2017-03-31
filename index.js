@@ -5,7 +5,8 @@ const pkg = require('./package.json');
 const low = require('lowdb');
 const config = require('./lib/config');
 
-const Table = require('cli-table');
+const colors = require('colors');
+const {table} = require('table');
 
 const serialize = value => JSON.stringify(value, null, 2);
 const db = low(config.dbPath, { format: { serialize }});
@@ -26,10 +27,10 @@ const state = require('./jsonschema/state.json');
 const Validator = require('jsonschema').Validator;
 const v = new Validator();
 
-v.addSchema(apiCommon, 'api-common');
-v.addSchema(device, 'device');
-v.addSchema(actions, 'actions');
-v.addSchema(state, 'state');
+v.addSchema(apiCommon, '/api-common');
+v.addSchema(device, '/device');
+v.addSchema(actions, '/actions');
+v.addSchema(state, '/state');
 
 
 db.defaults({
@@ -42,6 +43,11 @@ program
   .command('add')
   .description('add a remote driver\'s session')
   .action(add);
+
+program
+  .command('del <name>')
+  .description('delete a remote driver\'s session')
+  .action(del);
 
 program
   .command('sessions')
@@ -82,6 +88,8 @@ program
 
 program
   .version(pkg.version)
+  .option('-b, --body', 'show response body of list/get/execute')
+  .option('-l, --local', 'list local devices')
   .parse(process.argv);
 
 function add() {
@@ -147,12 +155,43 @@ function add() {
   });
 }
 
-function sessions() {
+function del(name) {
 
-  // instantiate
-  const sessionsTable = new Table({
-    head: ['name', 'endpoint', 'userId', 'useToken', 'in use']
-  });
+  const sessions = db.get('sessions').value();
+
+  if (sessions.length === 0) {
+    console.log('please add first');
+    return;
+  }
+
+  if (!sessions.some(session => session.name === name)) {
+    console.log('no such name, please try again');
+    return;
+  }
+
+  db.get('sessions')
+    .remove({name: name})
+    .write();
+
+  if (db.get('currentSession').value() === name) {
+    if(sessions.length === 0) {
+      db.unset('currentSession')
+        .write();
+    } else {
+      db.set('currentSession', sessions[0].name)
+        .write();
+    }
+  }
+
+  const devices = db.get('devices');
+  if(devices.value().length !== 0) {
+    devices
+      .remove({sessionName: name})
+      .write();
+  }
+}
+
+function sessions() {
 
   const sessions = db.get('sessions').value();
   const currentSession = db.get('currentSession').value();
@@ -162,6 +201,9 @@ function sessions() {
     return;
   }
 
+  let sessionsTable = [];
+  sessionsTable.push(['name'.red, 'endpoint'.red, 'userId'.red, 'useToken'.red, 'in use'.red]);
+
   sessions.forEach(session => {
     if (session.name === currentSession) {
       sessionsTable.push([session.name, session.endpoint, session.userAuth.userId, session.userAuth.userToken, '*****'])
@@ -170,7 +212,7 @@ function sessions() {
     }
   });
 
-  console.log(sessionsTable.toString());
+  console.log(table(sessionsTable));
 }
 
 function use(name) {
@@ -197,19 +239,127 @@ function list() {
   }
 
   const session = db.get('sessions').find({ name: currentSession }).value();
-
   const listUrl = url.resolve(session.endpoint, 'list');
-  return request(listUrl, {
-    userAuth: session.userAuth
-  })
-    .then()
 
+  const localDevices = db.get('devices').value();
+  if(localDevices.length === 0) {
+    console.log('please list first');
+    return;
+  }
+  if(program.local) {
+    listDevices(localDevices);
+  } else {
+    request(listUrl, {
+      userAuth: session.userAuth
+    })
+      .then(body => {
 
+        if(program.body) {
+          console.log(colors.yellow('response body:'));
+          console.log(JSON.stringify(body, null, 2));
+        }
+
+        const errors = v.validate(body, apiList).errors;
+        if (errors.length === 0) {
+          const status = body.status;
+
+          if (status === 0) {
+            const devices = body.data;
+            devices
+              .map(device => Object.assign(device, {sessionName: currentSession}))
+              .forEach(device => {
+                if(!localDevices.some(item => item.deviceId === device.deviceId && item.sessionName === currentSession)){
+                  localDevices.push(device);
+                }
+              });
+
+            db.set('devices',localDevices)
+              .write();
+
+            listDevices(devices);
+          } else {
+            console.log(`errorStatus: ${status}`.red)
+          }
+        } else {
+          console.log(colors.yellow('body checked by json schema:'));
+          errors.forEach(error => console.log(colors.red(error.stack)))
+        }
+      })
+  }
 }
 
-function get(id) {}
+function get(id) {
+  const currentSession = db.get('currentSession').value();
+
+  if (!currentSession) {
+    console.log('please add first');
+    return;
+  }
+
+  const session = db.get('sessions').find({ name: currentSession }).value();
+  const getUrl = url.resolve(session.endpoint, 'get');
+  const localDevices = db.get('devices').value();
+
+  if(localDevices.length === 0) {
+    console.log('please list first');
+    return;
+  }
+
+  if(program.local) {
+    listDevice(localDevices[id]);
+  } else {
+    request(getUrl, {
+      device:{},
+      userAuth: session.userAuth
+    })
+      .then(body => {
+        if(program.body) {
+          console.log(colors.yellow('response body:'));
+          console.log(JSON.stringify(body, null, 2));
+        }
+        const errors = v.validate(body, apiGet).errors;
+        if(errors.length === 0) {
+          const status = body.status;
+          if (status === 0) {
+            const data = body.data;
+            db.get('devices')
+              .find(id)
+              .assign(Object.assign(data, {sessionName: currentSession}))
+              .write();
+            listDevice(data);
+          } else {
+            console.log(`errorStatus: ${status}`.red)
+          }
+        } else {
+          console.log(colors.yellow('body checked by json schema:'));
+          errors.forEach(error => console.log(colors.red(error.stack)))
+        }
+      })
+  }
+  
+}
 
 function execute(id, action) {}
 
 function command() {}
 
+function listDevices(devices) {
+  devices.forEach((device,index) => {
+    console.log(`id: ${index}`.yellow);
+    console.log( `sessionName: ${device.sessionName}`.yellow);
+    console.log(`deviceId: ${device.deviceId}`);
+    console.log(`name: ${device.name}`);
+    console.log(`type: ${device.type}`);
+    console.log(`offline: ${device.offline}`);
+    console.log();
+  });
+}
+
+function listDevice(device) {
+  console.log( `sessionName: ${device.sessionName}`.yellow);
+  console.log(`deviceId: ${device.deviceId}`);
+  console.log(`name: ${device.name}`);
+  console.log(`type: ${device.type}`);
+  console.log(`offline: ${device.offline}`);
+  console.log();
+}

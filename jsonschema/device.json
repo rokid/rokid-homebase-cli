@@ -32,10 +32,10 @@
       ]
     },
     "actions": {
-      "$ref": "actions"
+      "$ref": "/actions"
     },
     "state": {
-      "$ref": "state"
+      "$ref": "/state"
     },
     "offline": {
       "type": "boolean",
