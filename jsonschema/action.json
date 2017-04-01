@@ -1,5 +1,5 @@
 {
-  "description": "validation of a standard rokid homebase device's actions",
+  "description": "validation of device's action to execute",
   "type": "object",
   "properties": {
     "switch": {
@@ -11,14 +11,11 @@
       ]
     },
     "color": {
-      "type": "number",
-      "minimum": 0,
-      "maximum": 16777215
+      "type": ["string", "number"]
+      }
     },
     "brightness": {
-      "type": "number",
-      "minimum": 0,
-      "maximum": 100
+      "type": ["string", "number"]
     },
     "mode": {
       "type": "string",
@@ -34,6 +31,12 @@
         "sleep"
       ]
     },
+    "position": {
+      "type": ["string", "number"]
+    },
+    "fanspeed": {
+      "type": ["string", "number"]
+    },
     "swing_mode": {
       "type": "string",
       "enum": [
@@ -47,23 +50,21 @@
       ]
     },
     "volume": {
-      "type": "number",
-      "minimum": 0,
-      "maximum": 100
+      "type": ["string", "number"]
     },
     "channel": {
-      "type": "number",
-      "minimum": 0
+      "type": ["string", "number"]
     },
     "humidity": {
-      "type": "number",
-      "minimum": 0,
-      "maximum": 100
+      "type": ["string", "number"]
     },
     "temperature": {
-      "type": "number",
-      "minimum": 0,
-      "maximum": 100
-    }
+      "type": ["string", "number"]
+    },
+    "ping": {
+      "type": "string",
+      "enum": [
+        "trigger"
+      ]
   }
 }

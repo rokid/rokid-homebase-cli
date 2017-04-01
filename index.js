@@ -23,6 +23,7 @@ const apiExecute = require('./jsonschema/api-execute.json');
 const device = require('./jsonschema/device.json');
 const actions = require('./jsonschema/actions.json');
 const state = require('./jsonschema/state.json');
+const execAction = require('./jsonschema/action.json');
 
 const Validator = require('jsonschema').Validator;
 const v = new Validator();
@@ -71,7 +72,7 @@ program
 
 program
   .command('execute <id> <action>')
-  .description('execute the device<id> with target action(format as json)')
+  .description('execute the device<id> with target action(e.g switch=on | color=12345)')
   .action(execute);
 
 program
@@ -246,12 +247,11 @@ function list() {
     console.log('please list first');
     return;
   }
+
   if(program.local) {
     listDevices(localDevices);
   } else {
-    request(listUrl, {
-      userAuth: session.userAuth
-    })
+    request(listUrl, session.userAuth)
       .then(body => {
 
         if(program.body) {
@@ -299,9 +299,16 @@ function get(id) {
   const session = db.get('sessions').find({ name: currentSession }).value();
   const getUrl = url.resolve(session.endpoint, 'get');
   const localDevices = db.get('devices').value();
+  const targetDevcie = localDevices[id];
+  targetDevcie.sessionName = undefined;
 
   if(localDevices.length === 0) {
     console.log('please list first');
+    return;
+  }
+
+  if(id > localDevices.length) {
+    console.log('no such id, please try again');
     return;
   }
 
@@ -309,7 +316,7 @@ function get(id) {
     listDevice(localDevices[id]);
   } else {
     request(getUrl, {
-      device:{},
+      device:targetDevcie,
       userAuth: session.userAuth
     })
       .then(body => {
@@ -322,10 +329,15 @@ function get(id) {
           const status = body.status;
           if (status === 0) {
             const data = body.data;
+            targetDevcie.sessionName = currentSession;
             db.get('devices')
-              .find(id)
-              .assign(Object.assign(data, {sessionName: currentSession}))
+              .find({
+                deviceId: targetDevcie.deviceId,
+                sessionName: currentSession
+              })
+              .assign(Object.assign(data))
               .write();
+
             listDevice(data);
           } else {
             console.log(`errorStatus: ${status}`.red)
@@ -336,10 +348,79 @@ function get(id) {
         }
       })
   }
-  
 }
 
-function execute(id, action) {}
+function execute(id, action) {
+
+  const currentSession = db.get('currentSession').value();
+
+  if (!currentSession) {
+    console.log('please add first');
+    return;
+  }
+
+  const session = db.get('sessions').find({ name: currentSession }).value();
+  const executeUrl = url.resolve(session.endpoint, 'execute');
+
+  const localDevices = db.get('devices').value();
+  const targetDevcie = localDevices[id];
+  targetDevcie.sessionName = undefined; //????
+
+  if(localDevices.length === 0) {
+    console.log('please list first');
+    return;
+  }
+
+  if(id > localDevices.length) {
+    console.log('no such id, please try again');
+    return;
+  }
+
+  const arr = action.split('=');
+  const actionObj = {};
+  actionObj[arr[0]] = arr[1];
+
+  const actionError = v.validate(actionObj, execAction).errors;
+  if(actionError.length === 0) {
+    request(executeUrl,{
+      device: Object.assign({},targetDevcie, {
+        userAuth: session.userAuth
+      }),
+      action: actionObj
+    })
+      .then(body => {
+        if(program.body) {
+          console.log(colors.yellow('response body:'));
+          console.log(JSON.stringify(body, null, 2));
+        }
+        const errors = v.validate(body, apiExecute).errors;
+        if(errors.length === 0) {
+          if (body.status === 0) {
+
+            const state = Object.assign({}, targetDevcie.state, body.data);
+            targetDevcie.sessionName = currentSession;
+            db.get('devices')
+              .find({
+                deviceId: targetDevcie.deviceId,
+                sessionName: currentSession
+              })
+              .assign({state: state})
+              .write();
+
+          } else {
+            console.log(`errorStatus: ${status}`.red)
+          }
+        } else {
+          console.log(colors.yellow('body checked by json schema:'));
+          errors.forEach(error => console.log(colors.red(error.stack)))
+        }
+      })
+  } else {
+    console.log(colors.yellow('input checked by json schema:'));
+    actionError.forEach(error => console.log(colors.red(error.stack)))
+  }
+
+}
 
 function command() {}
 

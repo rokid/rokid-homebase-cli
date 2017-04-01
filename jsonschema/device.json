@@ -1,5 +1,5 @@
 {
-  "description": "description of a standard rokid homebase device",
+  "description": "validation of a standard rokid homebase device",
   "type": "object",
   "properties": {
     "deviceId": {
