@@ -13,7 +13,7 @@ const db = low(config.dbPath, { format: { serialize }});
 
 const url = require('url');
 const request = require('./lib/requestAction');
-
+const server = require('./lib/local-server');
 
 //about jsonschema
 const apiCommon = require('./jsonschema/api-common.json');
@@ -39,6 +39,11 @@ db.defaults({
   devices: []
 })
   .write();
+
+program
+  .command('serve <path> [port]')
+  .description('transform local driver to server with default port 3000')
+  .action(serve);
 
 program
   .command('add')
@@ -71,8 +76,8 @@ program
   .action(get);
 
 program
-  .command('execute <id> <prop> <name> [val]')
-  .description('execute the device<id> with target action(e.g switch color 12345)')
+  .command('exec <id> <prop> <name> [val]')
+  .description('execute the device<id> with target action(e.g color num 12345)')
   .action(execute);
 
 program
@@ -93,10 +98,14 @@ program
   .option('-l, --local', 'list local devices')
   .parse(process.argv);
 
+
+function serve(path, port) {
+  server(path, port);
+}
+
 function add() {
 
   const sessions = db.get('sessions');
-
   const questions = [
     {
       type: 'input',
@@ -242,13 +251,14 @@ function list() {
   const session = db.get('sessions').find({ name: currentSession }).value();
   const listUrl = url.resolve(session.endpoint, 'list');
 
-  const localDevices = db.get('devices').value();
-  if(localDevices.length === 0) {
-    console.log('please list first');
-    return;
-  }
+  const localDevices = db.get('devices').filter({ sessionName: currentSession }).value();
+  const allDevices = db.get('devices').value();
 
   if(program.local) {
+    if(localDevices.length === 0) {
+      console.log('please list first');
+      return;
+    }
     listDevices(localDevices);
   } else {
     request(listUrl, session.userAuth)
@@ -268,12 +278,12 @@ function list() {
             devices
               .map(device => Object.assign(device, {sessionName: currentSession}))
               .forEach(device => {
-                if(!localDevices.some(item => item.deviceId === device.deviceId && item.sessionName === currentSession)){
-                  localDevices.push(device);
+                if(!localDevices.some(item => item.deviceId === device.deviceId)){
+                  allDevices.push(device);
                 }
               });
 
-            db.set('devices',localDevices)
+            db.set('devices',allDevices)
               .write();
 
             listDevices(devices);
@@ -298,7 +308,7 @@ function get(id) {
 
   const session = db.get('sessions').find({ name: currentSession }).value();
   const getUrl = url.resolve(session.endpoint, 'get');
-  const localDevices = db.get('devices').value();
+  const localDevices = db.get('devices').filter({ sessionName: currentSession }).value();
   const targetDevcie = localDevices[id];
   targetDevcie.sessionName = undefined;
 
@@ -362,7 +372,7 @@ function execute(id, prop, name, val) {
   const session = db.get('sessions').find({ name: currentSession }).value();
   const executeUrl = url.resolve(session.endpoint, 'execute');
 
-  const localDevices = db.get('devices').value();
+  const localDevices = db.get('devices').filter({sessionName: currentSession}).value();
 
   if(localDevices.length === 0) {
     console.log('please list first');
@@ -377,20 +387,20 @@ function execute(id, prop, name, val) {
   const targetDevcie = localDevices[id];
   targetDevcie.sessionName = undefined;
 
+  //for future when action is changed
   // const action = {
   //   property: prop,
   //   name: name,
   //   value: val
   // };
 
-  //for debug
+  //for debug now
   let action = {};
   if (name === 'num') {
     action[prop] = parseInt(val);
   } else {
     action[prop] = name;
   }
-
 
   const actionError = v.validate(action, execAction).errors;
   if(actionError.length === 0) {

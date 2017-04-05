@@ -8,9 +8,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cli-table": "^0.3.1",
+    "body-parser": "^1.17.1",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
+    "express": "^4.15.2",
     "inquirer": "^3.0.6",
     "jsonschema": "^1.1.1",
     "lowdb": "^0.16.0",

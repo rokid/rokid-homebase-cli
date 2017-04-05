@@ -45,7 +45,7 @@
       ]
     },
     "deviceInfo": {
-      "type": "object"
+      "type": ["object", "null"]
     },
     "parent": {
       "type": "string"
