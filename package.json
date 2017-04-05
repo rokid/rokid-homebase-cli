@@ -20,7 +20,7 @@
     "table": "^4.0.1"
   },
   "bin": {
-    "rhome": "rhome.js"
+    "rhome": "bin/rhome.js"
   },
   "directories": {
     "test": "test"
