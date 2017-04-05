@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 const program = require('commander');
+const path = require('path');
 const pkg = require('./package.json');
 
 const low = require('lowdb');
@@ -99,8 +100,8 @@ program
   .parse(process.argv);
 
 
-function serve(path, port) {
-  server(path, port);
+function serve(pathname, port) {
+  server(path.resolve(pathname), port);
 }
 
 function add() {
