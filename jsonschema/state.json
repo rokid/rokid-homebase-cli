@@ -3,25 +3,26 @@
   "type": "object",
   "properties": {
     "switch": {
-      "type": "string",
+      "type": ["string", "null"],
       "enum": [
         "on",
         "off",
-        "stop"
+        "stop",
+        null
       ]
     },
     "color": {
-      "type": "number",
+      "type": ["number","null"],
       "minimum": 0,
       "maximum": 16777215
     },
     "brightness": {
-      "type": "number",
+      "type": ["number","null"],
       "minimum": 0,
       "maximum": 100
     },
     "mode": {
-      "type": "string",
+      "type": ["string", "null"],
       "enum": [
         "auto",
         "manual",
@@ -35,7 +36,7 @@
       ]
     },
     "swing_mode": {
-      "type": "string",
+      "type": ["string", "null"],
       "enum": [
         "auto",
         "on",
@@ -43,25 +44,26 @@
         "horizon",
         "horizon.off",
         "vertical",
-        "vertical.off"
+        "vertical.off",
+        null
       ]
     },
     "volume": {
-      "type": "number",
+      "type": ["number","null"],
       "minimum": 0,
       "maximum": 100
     },
     "channel": {
-      "type": "number",
+      "type": ["number","null"],
       "minimum": 0
     },
     "humidity": {
-      "type": "number",
+      "type": ["number","null"],
       "minimum": 0,
       "maximum": 100
     },
     "temperature": {
-      "type": "number",
+      "type": ["number","null"],
       "minimum": 0,
       "maximum": 100
     }
