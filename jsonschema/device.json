@@ -56,7 +56,6 @@
     "name",
     "type",
     "actions",
-    "state",
-    "offline"
+    "state"
   ]
 }
