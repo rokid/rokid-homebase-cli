@@ -71,8 +71,8 @@ program
   .action(get);
 
 program
-  .command('execute <id> <action>')
-  .description('execute the device<id> with target action(e.g switch=on | color=12345)')
+  .command('execute <id> <prop> <name> [val]')
+  .description('execute the device<id> with target action(e.g switch color 12345)')
   .action(execute);
 
 program
@@ -350,7 +350,7 @@ function get(id) {
   }
 }
 
-function execute(id, action) {
+function execute(id, prop, name, val) {
 
   const currentSession = db.get('currentSession').value();
 
@@ -363,8 +363,6 @@ function execute(id, action) {
   const executeUrl = url.resolve(session.endpoint, 'execute');
 
   const localDevices = db.get('devices').value();
-  const targetDevcie = localDevices[id];
-  targetDevcie.sessionName = undefined; //????
 
   if(localDevices.length === 0) {
     console.log('please list first');
@@ -376,17 +374,31 @@ function execute(id, action) {
     return;
   }
 
-  const arr = action.split('=');
-  const actionObj = {};
-  actionObj[arr[0]] = arr[1];
+  const targetDevcie = localDevices[id];
+  targetDevcie.sessionName = undefined;
 
-  const actionError = v.validate(actionObj, execAction).errors;
+  // const action = {
+  //   property: prop,
+  //   name: name,
+  //   value: val
+  // };
+
+  //for debug
+  let action = {};
+  if (name === 'num') {
+    action[prop] = parseInt(val);
+  } else {
+    action[prop] = name;
+  }
+
+
+  const actionError = v.validate(action, execAction).errors;
   if(actionError.length === 0) {
     request(executeUrl,{
       device: Object.assign({},targetDevcie, {
         userAuth: session.userAuth
       }),
-      action: actionObj
+      action: action
     })
       .then(body => {
         if(program.body) {
