@@ -81,10 +81,10 @@ program
   .description('execute the device<id> with target action(e.g color num 12345)')
   .action(execute);
 
-program
-  .command('command <name>')
-  .description('')
-  .action(command);
+// program
+//   .command('command <name>')
+//   .description('')
+//   .action(command);
 
 program
   .command('*', { isDefault: true })
@@ -289,7 +289,7 @@ function list() {
 
             listDevices(devices);
           } else {
-            console.log(`errorStatus: ${status}`.red)
+            console.log(`errorName: ${body.errorName}`.red)
           }
         } else {
           console.log(colors.yellow('body checked by json schema:'));
