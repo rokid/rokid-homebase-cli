@@ -40,7 +40,7 @@ Usage: rhome [options] [command]
 ```
 
 * `rhome` will create `rhome.json` file in your user root path for the first time, which can modify if necessary.
-* `add` is an interactive command.
+* `add` is an interactive command. `name` must be only characters, numbers and underscore, e.g demo_1
 * other commands are command line mode.
 * `-b` show raw response body of list | get | execute.
 * `-l` list local devices of `rhome.json` listed before.
