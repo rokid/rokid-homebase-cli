@@ -113,15 +113,20 @@ function add() {
       name: 'name',
       message: 'remote driver\'s name',
       validate: function(value) {
+        const isName = /^\w+$/.test(value);
         const isExisted = sessions.find({ name: value }).value();
         //add first time
-        if (value && sessions.value().length === 0) {
+        if(!isName) {
+          return 'Name must be only characters, numbers and underscore, please input again.'
+        }
+        if (sessions.value().length === 0) {
           return true;
         }
-        if (value && !isExisted) {
+        if(!isExisted) {
           return true;
+        } else {
+          return 'It\'s existed, please input again'
         }
-        return 'Name is null or existed, please input again'
       }
     },
     {
