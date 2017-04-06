@@ -10,7 +10,7 @@ $ npm install -g rhome
 
 ## usage
 
-```bash
+```
 $ rhome -h
 
 Usage: rhome [options] [command]
@@ -48,7 +48,7 @@ Usage: rhome [options] [command]
 
 a simple sample of rhome:
 
-```bash
+```
 $ rhome add
 
 ? remote driver's name demo
@@ -69,7 +69,7 @@ $ rhome add
 
 * success response data
 
-```bash
+```
 $ rhome list
 
 id: 0
@@ -84,8 +84,7 @@ offline: false
 
 In this case, you can check your errors of specific data shown in error message.
 
-```bash
-
+```
 $ rhome list
 
 body checked by json schema:
