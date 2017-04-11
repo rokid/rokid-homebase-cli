@@ -2,6 +2,8 @@ const inquirer = require('inquirer');
 const program = require('commander');
 const path = require('path');
 const pkg = require('./package.json');
+const _ = require('lodash');
+const updateState = require('./lib/update-state');
 
 const low = require('lowdb');
 const config = require('./lib/config');
@@ -257,8 +259,8 @@ function list() {
   const session = db.get('sessions').find({ name: currentSession }).value();
   const listUrl = url.resolve(session.endpoint, 'list');
 
-  const localDevices = db.get('devices').filter({ sessionName: currentSession }).value();
-  const allDevices = db.get('devices').value();
+  let localDevices = db.get('devices').filter({ sessionName: currentSession }).value();
+  let allDevices = db.get('devices').value();
 
   if(program.local) {
     if(localDevices.length === 0) {
@@ -280,19 +282,44 @@ function list() {
           const status = body.status;
 
           if (status === 0) {
-            const devices = body.data;
-            devices
+            const foundDevices = body.data;
+
+            foundDevices
               .map(device => Object.assign(device, {sessionName: currentSession}))
-              .forEach(device => {
-                if(!localDevices.some(item => item.deviceId === device.deviceId)){
+              .map(device => {
+                let currentDevice = _.find(localDevices, {
+                  deviceId: device.deviceId,
+                  sessionName: currentSession
+                });
+
+                if(currentDevice) {
+                  return Object.assign({}, currentDevice, device, {
+                    state: updateState(device.state, currentDevice.state)
+                  });
+                } else {
                   allDevices.push(device);
+                  return device;
+                }
+              });
+
+            allDevices = _.chain(allDevices)
+              .map(device => {
+                const foundDevice = _.find(foundDevices, {
+                  deviceId: device.deviceId,
+                  sessionName: currentSession
+                });
+
+                if(!foundDevice) {
+                  return device;
+                } else {
+                  return foundDevice
                 }
               });
 
             db.set('devices',allDevices)
               .write();
 
-            listDevices(devices);
+            listDevices(foundDevices);
           } else {
             console.log(`errorName: ${body.errorName}`.red)
           }
@@ -393,22 +420,15 @@ function execute(id, prop, name, val) {
   const targetDevcie = localDevices[id];
   targetDevcie.sessionName = undefined;
 
-  //for future when action is changed
-  // const action = {
-  //   property: prop,
-  //   name: name,
-  //   value: val
-  // };
-
-  //for debug now
   let action = {};
+  action.property = prop;
+  action.name = name;
   if (name === 'num') {
-    action[prop] = parseInt(val);
-  } else {
-    action[prop] = name;
+    action.value = parseInt(val);
   }
 
   const actionError = v.validate(action, execAction).errors;
+  // console.log(JSON.stringify(targetDevcie, null, 2));
   if(actionError.length === 0) {
     request(executeUrl,{
       device: Object.assign({},targetDevcie, {
