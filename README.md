@@ -25,7 +25,7 @@ Usage: rhome [options] [command]
     use <name>                     user an added session
     list                           list a driver's all devices
     get <id>                       get one device's current state
-    exec <id> <prop> <name> [val]  execute the device<id> with target action(e.g color num 12345)
+    exec <id> <prop> <name> [val]  execute the device<id> with target action(e.g color num 256)
     *                              [object Object]
     help [cmd]                     display help for [cmd]
 
