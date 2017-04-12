@@ -80,7 +80,7 @@ program
 
 program
   .command('exec <id> <prop> <name> [val]')
-  .description('execute the device<id> with target action(e.g color num 12345)')
+  .description('execute the device<id> with target action(e.g color num 256)')
   .action(execute);
 
 // program
