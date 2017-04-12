@@ -12,7 +12,7 @@ const colors = require('colors');
 const {table} = require('table');
 
 const serialize = value => JSON.stringify(value, null, 2);
-const db = low(config.dbPath, { format: { serialize }});
+const db = low(config.dbPath, {format: {serialize}});
 
 const url = require('url');
 const request = require('./lib/requestAction');
@@ -89,9 +89,9 @@ program
 //   .action(command);
 
 program
-  .command('*', { isDefault: true })
+  .command('*', {isDefault: true})
   .description('show help')
-  .action(function(){
+  .action(function () {
     program.help();
   });
 
@@ -114,17 +114,17 @@ function add() {
       type: 'input',
       name: 'name',
       message: 'remote driver\'s name',
-      validate: function(value) {
+      validate: function (value) {
         const isName = /^\w+$/.test(value);
-        const isExisted = sessions.find({ name: value }).value();
+        const isExisted = sessions.find({name: value}).value();
         //add first time
-        if(!isName) {
+        if (!isName) {
           return 'Name must be only characters, numbers and underscore, please input again.'
         }
         if (sessions.value().length === 0) {
           return true;
         }
-        if(!isExisted) {
+        if (!isExisted) {
           return true;
         } else {
           return 'It\'s existed, please input again'
@@ -192,7 +192,7 @@ function del(name) {
     .write();
 
   if (db.get('currentSession').value() === name) {
-    if(sessions.length === 0) {
+    if (sessions.length === 0) {
       db.unset('currentSession')
         .write();
     } else {
@@ -202,7 +202,7 @@ function del(name) {
   }
 
   const devices = db.get('devices');
-  if(devices.value().length !== 0) {
+  if (devices.value().length !== 0) {
     devices
       .remove({sessionName: name})
       .write();
@@ -234,7 +234,7 @@ function sessions() {
 }
 
 function use(name) {
-  const isExisted = db.get('sessions').find({ name: name }).value();
+  const isExisted = db.get('sessions').find({name: name}).value();
   if (!name) {
     console.log('Name can not be null, please input again');
   } else {
@@ -256,14 +256,14 @@ function list() {
     return;
   }
 
-  const session = db.get('sessions').find({ name: currentSession }).value();
+  const session = db.get('sessions').find({name: currentSession}).value();
   const listUrl = url.resolve(session.endpoint, 'list');
 
-  let localDevices = db.get('devices').filter({ sessionName: currentSession }).value();
+  let localDevices = db.get('devices').filter({sessionName: currentSession}).value();
   let allDevices = db.get('devices').value();
 
-  if(program.local) {
-    if(localDevices.length === 0) {
+  if (program.local) {
+    if (localDevices.length === 0) {
       console.log('please list first');
       return;
     }
@@ -272,7 +272,7 @@ function list() {
     request(listUrl, session.userAuth)
       .then(body => {
 
-        if(program.body) {
+        if (program.body) {
           console.log(colors.yellow('response body:'));
           console.log(JSON.stringify(body, null, 2));
         }
@@ -292,7 +292,7 @@ function list() {
                   sessionName: currentSession
                 });
 
-                if(currentDevice) {
+                if (currentDevice) {
                   return Object.assign({}, currentDevice, device, {
                     state: updateState(device.state, currentDevice.state)
                   });
@@ -309,14 +309,14 @@ function list() {
                   sessionName: currentSession
                 });
 
-                if(!foundDevice) {
+                if (!foundDevice) {
                   return device;
                 } else {
                   return foundDevice
                 }
               });
 
-            db.set('devices',allDevices)
+            db.set('devices', allDevices)
               .write();
 
             listDevices(foundDevices);
@@ -339,36 +339,36 @@ function get(id) {
     return;
   }
 
-  const session = db.get('sessions').find({ name: currentSession }).value();
+  const session = db.get('sessions').find({name: currentSession}).value();
   const getUrl = url.resolve(session.endpoint, 'get');
-  const localDevices = db.get('devices').filter({ sessionName: currentSession }).value();
+  const localDevices = db.get('devices').filter({sessionName: currentSession}).value();
   const targetDevcie = localDevices[id];
   targetDevcie.sessionName = undefined;
 
-  if(localDevices.length === 0) {
+  if (localDevices.length === 0) {
     console.log('please list first');
     return;
   }
 
-  if(id > localDevices.length) {
+  if (id > localDevices.length) {
     console.log('no such id, please try again');
     return;
   }
 
-  if(program.local) {
+  if (program.local) {
     listDevice(localDevices[id]);
   } else {
     request(getUrl, {
-      device:targetDevcie,
+      device: targetDevcie,
       userAuth: session.userAuth
     })
       .then(body => {
-        if(program.body) {
+        if (program.body) {
           console.log(colors.yellow('response body:'));
           console.log(JSON.stringify(body, null, 2));
         }
         const errors = v.validate(body, apiGet).errors;
-        if(errors.length === 0) {
+        if (errors.length === 0) {
           const status = body.status;
           if (status === 0) {
             const data = body.data;
@@ -402,17 +402,17 @@ function execute(id, prop, name, val) {
     return;
   }
 
-  const session = db.get('sessions').find({ name: currentSession }).value();
+  const session = db.get('sessions').find({name: currentSession}).value();
   const executeUrl = url.resolve(session.endpoint, 'execute');
 
   const localDevices = db.get('devices').filter({sessionName: currentSession}).value();
 
-  if(localDevices.length === 0) {
+  if (localDevices.length === 0) {
     console.log('please list first');
     return;
   }
 
-  if(id > localDevices.length) {
+  if (id > localDevices.length) {
     console.log('no such id, please try again');
     return;
   }
@@ -429,20 +429,20 @@ function execute(id, prop, name, val) {
 
   const actionError = v.validate(action, execAction).errors;
   // console.log(JSON.stringify(targetDevcie, null, 2));
-  if(actionError.length === 0) {
-    request(executeUrl,{
-      device: Object.assign({},targetDevcie, {
+  if (actionError.length === 0) {
+    request(executeUrl, {
+      device: Object.assign({}, targetDevcie, {
         userAuth: session.userAuth
       }),
       action: action
     })
       .then(body => {
-        if(program.body) {
+        if (program.body) {
           console.log(colors.yellow('response body:'));
           console.log(JSON.stringify(body, null, 2));
         }
         const errors = v.validate(body, apiExecute).errors;
-        if(errors.length === 0) {
+        if (errors.length === 0) {
           if (body.status === 0) {
 
             const state = Object.assign({}, targetDevcie.state, body.data);
@@ -467,15 +467,15 @@ function execute(id, prop, name, val) {
     console.log(colors.yellow('input checked by json schema:'));
     actionError.forEach(error => console.log(colors.red(error.stack)))
   }
-
 }
 
-function command() {}
+function command() {
+}
 
 function listDevices(devices) {
-  devices.forEach((device,index) => {
+  devices.forEach((device, index) => {
     console.log(`id: ${index}`.yellow);
-    console.log( `sessionName: ${device.sessionName}`.yellow);
+    console.log(`sessionName: ${device.sessionName}`.yellow);
     console.log(`deviceId: ${device.deviceId}`);
     console.log(`name: ${device.name}`);
     console.log(`type: ${device.type}`);
@@ -485,7 +485,7 @@ function listDevices(devices) {
 }
 
 function listDevice(device) {
-  console.log( `sessionName: ${device.sessionName}`.yellow);
+  console.log(`sessionName: ${device.sessionName}`.yellow);
   console.log(`deviceId: ${device.deviceId}`);
   console.log(`name: ${device.name}`);
   console.log(`type: ${device.type}`);
