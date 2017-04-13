@@ -5,6 +5,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Rokid/rokid-homebase-cli.git"
+  },
   "author": "baixin",
   "license": "ISC",
   "dependencies": {
@@ -27,5 +31,5 @@
     "test": "test"
   },
   "devDependencies": {},
-  "description": ""
+  "description": "rokid-homebase-cli"
 }
