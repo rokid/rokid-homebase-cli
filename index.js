@@ -431,7 +431,7 @@ function execute(id, prop, name, val) {
   // console.log(JSON.stringify(targetDevcie, null, 2));
   if (actionError.length === 0) {
     request(executeUrl, {
-      device: Object.assign({}, targetDevcie, {
+      device: Object.assign({}, _.pick(targetDevcie, ['deviceId','state','deviceInfo']), {
         userAuth: session.userAuth
       }),
       action: action

@@ -5,7 +5,7 @@ develop tool for rokid homebase developer whicn can validate response data by js
 ## install
 
 ```bash
-$ npm install -g rhome
+$ npm install -g rokid-homebase-cli
 ```
 
 ## usage
