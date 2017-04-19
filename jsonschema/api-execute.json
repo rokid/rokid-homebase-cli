@@ -1,19 +1,7 @@
 {
   "description": "detail validation of list-api",
-  "allOf":[
-    {
-      "$ref": "/api-common"
-    },
-    {
-      "type": "object",
-      "properties":{
-        "data":{
-          "type": "object",
-          "properties": {
-            "$ref": "/state"
-          }
-        }
-      }
-    }
-  ]
+  "type": "object",
+  "properties": {
+    "$ref": "/state"
+  }
 }

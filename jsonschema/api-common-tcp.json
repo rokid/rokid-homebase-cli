@@ -1,0 +1,15 @@
+{
+  "description": "validation of response data",
+  "type": "object",
+  "properties": {
+    "result": {
+      "type": "any",
+      "description": "success response of list/get/execute/command"
+    },
+    "error": {
+      "type": "object",
+      "description": "error"
+    }
+  }
+}
+
