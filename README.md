@@ -13,19 +13,19 @@ $ npm install -g rokid-homebase-cli
 ```
 $ rhome -h
 
- Usage: rhome [options] [command]
+Usage: rhome [options] [command]
 
 
   Commands:
 
     serve <path> [port]                      transform local driver to server with default port 3000
     ssdp                                     start homebase ssdp broadcast
-    add                                      add a remote driver's session
-    del <name>                               delete a remote driver's session
+    add                                      add a session of remote driver
+    del <name>                               delete the session of remote driver
     sessions                                 list all added sessions
     use <name>                               user an added session
-    list [options]                           list a driver's all devices
-    get [options] <id>                       get one device's current state
+    list [options]                           list all devices of a driver
+    get [options] <id>                       get current state of a driver
     exec [options] <id> <prop> <name> [val]  execute the device<id> with target action(e.g color num 256)
 
   Options:
@@ -48,7 +48,7 @@ $ rhome list -h
 
   Usage: list [options]
 
-  list a driver's all devices
+  list all devices of a driver
 
   Options:
 

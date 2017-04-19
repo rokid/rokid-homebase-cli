@@ -24,12 +24,12 @@ program
 
 program
   .command('add')
-  .description('add a remote driver\'s session')
+  .description('add a session of remote driver')
   .action(wrap('add'));
 
 program
   .command('del <name>')
-  .description('delete a remote driver\'s session')
+  .description('delete the session of remote driver')
   .action(wrap('del'));
 
 program
@@ -46,14 +46,14 @@ program
   .command('list')
   .option('-d, --data', 'show response data of list')
   .option('-l, --local', 'list local devices')
-  .description('list a driver\'s all devices')
+  .description('list all devices of a driver')
   .action(wrap('list'));
 
 program
   .command('get <id>')
   .option('-l, --local', 'get local devices')
   .option('-d, --data', 'show response data of get')
-  .description('get one device\'s current state')
+  .description('get current state of a driver')
   .action(wrap('get'));
 
 program
