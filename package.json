@@ -1,6 +1,6 @@
 {
   "name": "rokid-homebase-cli",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -35,6 +35,8 @@
   "directories": {
     "test": "test"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "^3.2.0"
+  },
   "description": "rokid-homebase-cli"
 }

@@ -1,16 +1,12 @@
-const low = require('lowdb');
-const config = require('../lib/config');
 const {table} = require('table');
 const colors = require('colors');
-const serialize = value => JSON.stringify(value, null, 2);
-const db = low(config.dbPath, {format: {serialize}});
+const Session = require('../lib/session');
 
 module.exports = function () {
 
-  const sessions = db.get('sessions').value();
-  const currentSession = db.get('currentSession').value();
+  const session = new Session();
 
-  if (sessions.length === 0) {
+  if (session.allSessions.length === 0) {
     console.log('please add first');
     return;
   }
@@ -18,11 +14,11 @@ module.exports = function () {
   let sessionsTable = [];
   sessionsTable.push(['name'.red, 'endpoint'.red, 'userId'.red, 'useToken'.red, 'in use'.red]);
 
-  sessions.forEach(session => {
-    if (session.name === currentSession) {
-      sessionsTable.push([session.name, session.endpoint, session.userAuth.userId, session.userAuth.userToken, '*****'])
+  session.allSessions.forEach(s => {
+    if (s.name === session.currentSessionName) {
+      sessionsTable.push([s.name, s.endpoint, s.userAuth.userId, s.userAuth.userToken, '*****'])
     } else {
-      sessionsTable.push([session.name, session.endpoint, session.userAuth.userId, session.userAuth.userToken, '']);
+      sessionsTable.push([s.name, s.endpoint, s.userAuth.userId, s.userAuth.userToken, '']);
     }
   });
 

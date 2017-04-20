@@ -1,16 +1,6 @@
 const program = require('commander');
 const pkg = require('./package.json');
 const debug = require('debug');
-const low = require('lowdb');
-const config = require('./lib/config');
-const serialize = value => JSON.stringify(value, null, 2);
-const db = low(config.dbPath, {format: {serialize}});
-
-db.defaults({
-  sessions: [],
-  devices: []
-})
-  .write();
 
 program
   .command('serve <path> [port]')
@@ -78,7 +68,6 @@ if (!program.args.length) program.help();
 function wrap(fn) {
   return function(){
     if (program.verbose) {
-      // process.env.DEBUG = `${process.env.DEBUG || ''}rhome`;
       debug.enable('rhome');
     }
     require('./command/' + fn).apply(this, arguments)

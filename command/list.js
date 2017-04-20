@@ -1,38 +1,30 @@
-const _ = require('lodash');
-const updateState = require('../lib/update-state');
-const debug = require('debug');
-const low = require('lowdb');
-const config = require('../lib/config');
 const colors = require('colors');
-const {table} = require('table');
-const serialize = value => JSON.stringify(value, null, 2);
-const db = low(config.dbPath, {format: {serialize}});
+const Session = require('../lib/session');
+const Device = require('../lib/device');
 const request = require('../lib/requestAction');
 const v = require('../lib/jsonschema')();
 const apiList = require('../jsonschema/api-list.json');
 
 module.exports = function (command) {
 
-  const currentSession = db.get('currentSession').value();
+  const session = new Session();
+  const device = new Device();
 
-  if (!currentSession) {
+  if (!session.currentSessionName) {
     console.log('please add first');
     return;
   }
 
-  const session = db.get('sessions').find({name: currentSession}).value();
-
-  let localDevices = db.get('devices').filter({sessionName: currentSession}).value();
-  let allDevices = db.get('devices').value();
+  const devicesOfSession = device.getBySessionName(session.currentSessionName);
 
   if (command.local) {
-    if (localDevices.length === 0) {
+    if (devicesOfSession.length === 0) {
       console.log('please list first');
       return;
     }
-    listDevices(localDevices);
+    listDevices(devicesOfSession);
   } else {
-    request('list', session.endpoint, session.userAuth)
+    request('list', session.currentSession.endpoint, session.currentSession.userAuth)
       .then(data => {
 
         if (command.data) {
@@ -41,45 +33,12 @@ module.exports = function (command) {
         }
 
         const errors = v.validate(data, apiList).errors;
+
         if (errors.length === 0) {
-          const foundDevices = data;
 
-          foundDevices
-            .map(device => Object.assign(device, {sessionName: currentSession}))
-            .map(device => {
-              let currentDevice = _.find(localDevices, {
-                deviceId: device.deviceId,
-                sessionName: currentSession
-              });
+          device.updateOfSession(devicesOfSession, data, session.currentSessionName);
+          listDevices(data);
 
-              if (currentDevice) {
-                return Object.assign({}, currentDevice, device, {
-                  state: updateState(device.state, currentDevice.state)
-                });
-              } else {
-                allDevices.push(device);
-                return device;
-              }
-            });
-
-          allDevices = _.chain(allDevices)
-            .map(device => {
-              const foundDevice = _.find(foundDevices, {
-                deviceId: device.deviceId,
-                sessionName: currentSession
-              });
-
-              if (!foundDevice) {
-                return device;
-              } else {
-                return foundDevice
-              }
-            });
-
-          db.set('devices', allDevices)
-            .write();
-
-          listDevices(foundDevices);
         } else {
           console.log(colors.yellow('body checked by json schema:'));
           errors.forEach(error => console.log(colors.red(error.stack)))
