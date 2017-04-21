@@ -3,7 +3,7 @@ const colors = require('colors');
 const Session = require('../lib/session');
 const Device = require('../lib/device');
 const request = require('../lib/requestAction');
-const v = require('../lib/jsonschema')();
+const v = require('../lib/jsonschema');
 const apiExecute = require('../jsonschema/api-execute.json');
 const execAction = require('../jsonschema/action.json');
 
