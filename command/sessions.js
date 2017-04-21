@@ -4,9 +4,7 @@ const Session = require('../lib/session');
 
 module.exports = function () {
 
-  const session = new Session();
-
-  if (session.allSessions.length === 0) {
+  if (Session.getAllSessions().length === 0) {
     console.log('please add first');
     return;
   }
@@ -14,8 +12,8 @@ module.exports = function () {
   let sessionsTable = [];
   sessionsTable.push(['name'.red, 'endpoint'.red, 'userId'.red, 'useToken'.red, 'in use'.red]);
 
-  session.allSessions.forEach(s => {
-    if (s.name === session.currentSessionName) {
+  Session.getAllSessions().forEach(s => {
+    if (s.name === Session.getCurrentSessionName()) {
       sessionsTable.push([s.name, s.endpoint, s.userAuth.userId, s.userAuth.userToken, '*****'])
     } else {
       sessionsTable.push([s.name, s.endpoint, s.userAuth.userId, s.userAuth.userToken, '']);

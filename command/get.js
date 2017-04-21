@@ -1,21 +1,20 @@
 const colors = require('colors');
 const Session = require('../lib/session');
 const Device = require('../lib/device');
-const request = require('../lib/requestAction');
 const v = require('../lib/jsonschema');
 const apiGet = require('../jsonschema/api-get.json');
 
 module.exports = function (id, command) {
-  
-  const session = new Session();
-  const device = new Device();
-  
-  if (!session.currentSessionName) {
+
+  const currentSessionName = Session.getCurrentSessionName();
+  const session = new Session(currentSessionName);
+
+  if (!currentSessionName) {
     console.log('please add first');
     return;
   }
 
-  const devicesOfSession = device.getBySessionName(session.currentSessionName);
+  const devicesOfSession = Device.getBySessionName(currentSessionName);
   const targetDevice = devicesOfSession[id];
 
   if (devicesOfSession.length === 0) {
@@ -32,9 +31,9 @@ module.exports = function (id, command) {
     listDevice(targetDevice);
   } else {
     targetDevice.sessionName = undefined;
-    request('get', session.currentSession.endpoint, {
+    session.request('get', {
       device: targetDevice,
-      userAuth: session.currentSession.userAuth
+      userAuth: Session.getCurrentSession().userAuth
     })
       .then(data => {
         if (command.data) {
@@ -43,8 +42,8 @@ module.exports = function (id, command) {
         }
         const errors = v.validate(data, apiGet).errors;
         if (errors.length === 0) {
-          targetDevice.sessionName = session.currentSessionName;
-          device.updateById(targetDevice.deviceId, session.currentSessionName, data);
+          targetDevice.sessionName = currentSessionName;
+          Device.updateById(targetDevice.deviceId, currentSessionName, data);
 
           listDevice(data);
         } else {

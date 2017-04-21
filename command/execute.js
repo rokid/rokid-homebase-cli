@@ -2,23 +2,21 @@ const _ = require('lodash');
 const colors = require('colors');
 const Session = require('../lib/session');
 const Device = require('../lib/device');
-const request = require('../lib/requestAction');
 const v = require('../lib/jsonschema');
 const apiExecute = require('../jsonschema/api-execute.json');
 const execAction = require('../jsonschema/action.json');
 
 module.exports = function (id, prop, name, val, command) {
-  
-  const session = new Session();
-  const device = new Device();
 
+  const currentSessionName = Session.getCurrentSessionName();
+  const session = new Session(currentSessionName);
 
-  if (!session.currentSessionName) {
+  if (!currentSessionName) {
     console.log('please add first');
     return;
   }
 
-  const devicesOfSession = device.getBySessionName(session.currentSessionName);
+  const devicesOfSession = Device.getBySessionName(currentSessionName);
 
   if (devicesOfSession.length === 0) {
     console.log('please list first');
@@ -42,11 +40,10 @@ module.exports = function (id, prop, name, val, command) {
   }
 
   const actionError = v.validate(action, execAction).errors;
-  // console.log(JSON.stringify(targetDevice, null, 2));
   if (actionError.length === 0) {
-    request('execute', session.currentSession.endpoint, {
+    session.request('execute', {
       device: Object.assign({}, _.pick(targetDevice, ['deviceId','state','deviceInfo']), {
-        userAuth: session.currentSession.userAuth
+        userAuth: Session.getCurrentSession().userAuth
       }),
       action: action
     })
@@ -57,9 +54,9 @@ module.exports = function (id, prop, name, val, command) {
         }
         const errors = v.validate(data, apiExecute).errors;
         if (errors.length === 0) {
-          targetDevice.sessionName = session.currentSessionName;
+          targetDevice.sessionName = currentSessionName;
 
-          device.updateStateById(targetDevice.deviceId, session.currentSessionName, targetDevice.state, data)
+          Device.updateStateById(targetDevice.deviceId, currentSessionName, targetDevice.state, data)
 
         } else {
           console.log(colors.yellow('body checked by json schema:'));

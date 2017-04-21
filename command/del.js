@@ -2,10 +2,8 @@ const Session = require('../lib/session');
 const Device = require('../lib/device');
 
 module.exports = function (name) {
-  const session = new Session();
-  const device = new Device();
 
-  const sessions = session.allSessions;
+  const sessions = Session.getAllSessions();
 
   if (sessions.length === 0) {
     console.log('please add first');
@@ -17,7 +15,6 @@ module.exports = function (name) {
     return;
   }
 
-  session.delSessionByName(name);
-  // if (device.allDevices.length !== 0) {}
-  device.removeBySessionName(name);
+  Session.delSession(name);
+  Device.removeBySessionName(name);
 };

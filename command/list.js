@@ -1,21 +1,20 @@
 const colors = require('colors');
 const Session = require('../lib/session');
 const Device = require('../lib/device');
-const request = require('../lib/requestAction');
 const v = require('../lib/jsonschema');
 const apiList = require('../jsonschema/api-list.json');
 
 module.exports = function (command) {
 
+  const currentSessionName = Session.getCurrentSessionName();
   const session = new Session();
-  const device = new Device();
 
-  if (!session.currentSessionName) {
+  if (!currentSessionName) {
     console.log('please add first');
     return;
   }
 
-  const devicesOfSession = device.getBySessionName(session.currentSessionName);
+  const devicesOfSession = Device.getBySessionName(currentSessionName);
 
   if (command.local) {
     if (devicesOfSession.length === 0) {
@@ -24,7 +23,7 @@ module.exports = function (command) {
     }
     listDevices(devicesOfSession);
   } else {
-    request('list', session.currentSession.endpoint, session.currentSession.userAuth)
+    session.request('list', Session.getCurrentSession().userAuth)
       .then(data => {
 
         if (command.data) {
@@ -36,7 +35,7 @@ module.exports = function (command) {
 
         if (errors.length === 0) {
 
-          device.updateOfSession(devicesOfSession, data, session.currentSessionName);
+          Device.updateOfSession(devicesOfSession, data, currentSessionName);
           listDevices(data);
 
         } else {

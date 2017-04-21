@@ -3,8 +3,6 @@ const Session = require('../lib/session');
 
 module.exports = function () {
 
-  const session = new Session();
-
   const questions = [
     {
       type: 'input',
@@ -12,12 +10,12 @@ module.exports = function () {
       message: 'remote driver\'s name',
       validate: function (value) {
         const isName = /^\w+$/.test(value);
-        const isExisted = session.getSessionByName(value);
+        const isExisted = Session.getSessionByName(value);
         //add first time
         if (!isName) {
           return 'Name must be only characters, numbers and underscore, please input again.'
         }
-        if (session.allSessions.length === 0) {
+        if (Session.getAllSessions().length === 0) {
           return true;
         }
         if (!isExisted) {
@@ -57,11 +55,11 @@ module.exports = function () {
       }
     };
 
-    session.addSession(newSession);
+    Session.addSession(newSession);
 
     //default sessions[0] in use
-    if (!session.currentSessionName) {
-      session.setCurrentSession(answers.name)
+    if (!Session.getCurrentSessionName()) {
+      Session.setCurrentSession(answers.name)
     }
   });
 };

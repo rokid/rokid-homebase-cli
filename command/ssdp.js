@@ -1,4 +1,4 @@
-const SSDPClient = require('../lib/ssdp-client');
+const SSDPClient = require('../lib/protocol/ssdp-client');
 
 module.exports = function (command) {
 
