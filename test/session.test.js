@@ -1,4 +1,4 @@
-const should = require('chai').should();
+const expect = require('chai').expect;
 const db = require('../lib/db');
 const Session = require('../lib/session');
 
@@ -22,21 +22,21 @@ describe('session', function() {
 
   describe('#getAllSessions()', function() {
     it('allSessions should be an array', function(done) {
-      Session.getAllSessions().should.be.an('array');
+      expect(Session.getAllSessions()).to.be.an('array');
       done();
     })
   });
 
   describe('#getCurrentSessionName()', function() {
     it('currentSessionName should be a string', function(done) {
-      Session.getCurrentSessionName().should.be.a('string');
+      expect(Session.getCurrentSessionName()).to.be.a('string');
       done();
     })
   });
 
   describe('#getCurrentSession()', function() {
     it('currentSession should be an object', function(done) {
-      Session.getCurrentSession().should.be.a('object');
+      expect(Session.getCurrentSession()).to.be.a('object');
       done();
     })
   });
@@ -44,15 +44,15 @@ describe('session', function() {
   describe('#setCurrentSession()', function() {
     it('currentSession should be updated', function(done) {
       Session.setCurrentSession('test');
-      db.get('currentSession').value().should.equal('test');
+      expect(db.get('currentSession').value()).to.equal('test');
       done();
     })
   });
 
   describe('#getSessionByName()', function() {
     it('session get by name should be an object and name should be equal to input', function(done) {
-      Session.getSessionByName('demo').should.be.an('object');
-      Session.getSessionByName('demo').name.should.equal('demo');
+      expect(Session.getSessionByName('demo')).to.be.an('object');
+      expect(Session.getSessionByName('demo').name).to.equal('demo');
       done();
     })
   });
@@ -69,9 +69,17 @@ describe('session', function() {
       };
 
       Session.addSession(test);
-      db.get('sessions').find({name: test.name}).value().should.be.an('object');
-      db.get('sessions').find({name: test.name}).value().name.should.equal('test');
+      expect(db.get('sessions').find({name: test.name}).value()).to.be.an('object');
+      expect(db.get('sessions').find({name: test.name}).value().name).to.equal('test');
       done();
     })
+  });
+
+  describe('#delSession()', function() {
+    it('should not be found in sessions after delete', function(done) {
+      Session.delSession('demo');
+      expect(typeof db.get('sessions').find({name: 'demo'}).value()).to.equal('undefined');
+      done();
+    });
   })
 });
