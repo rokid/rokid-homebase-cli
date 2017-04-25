@@ -3,7 +3,7 @@ const db = require('../lib/db');
 const Session = require('../lib/session');
 
 describe('session', function() {
-  beforeEach(function() {
+  before(function() {
     const ses = {
       name: 'demo',
       endpoint: 'http://127.0.0.1:3000',
@@ -81,5 +81,21 @@ describe('session', function() {
       expect(typeof db.get('sessions').find({name: 'demo'}).value()).to.equal('undefined');
       done();
     });
+
+    it('currentSessionName should be changed if deleting currentSession', function(done) {
+      Session.delSession('demo');
+      const currentSessionName = Session.getCurrentSessionName();
+      expect(currentSessionName).to.not.equal('demo');
+      expect(currentSessionName).to.equal('test');
+      done();
+    });
+
+    it('currentSessionName should be unset if deleting all sessions', function(done) {
+      Session.delSession('demo');
+      Session.delSession('test');
+      const currentSessionName = Session.getCurrentSessionName();
+      expect(typeof currentSessionName).to.equal('undefined');
+      done();
+    })
   })
 });
