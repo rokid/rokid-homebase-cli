@@ -4,20 +4,6 @@ const Device = require('../lib/device');
 
 describe('device', function() {
   before(function() {
-    const ses = {
-      name: 'demo',
-      endpoint: 'http://127.0.0.1:3000',
-      useAuth:{
-        userId: '123',
-        userToken: '123'
-      }
-    };
-    db.get('sessions')
-      .push(ses)
-      .write();
-
-    db.set('currentSession', 'demo')
-      .write();
 
     const dev1 = {
       name: 'demo1',
