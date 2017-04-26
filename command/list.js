@@ -23,7 +23,7 @@ module.exports = function (command) {
     }
     listDevices(devicesOfSession);
   } else {
-    session.request('list', Session.getCurrentSession().userAuth)
+    session.request('list', { userAuth: Session.getCurrentSession().userAuth })
       .then(data => {
 
         if (command.data) {
@@ -34,7 +34,6 @@ module.exports = function (command) {
         const errors = v.validate(data, apiList).errors;
 
         if (errors.length === 0) {
-
           Device.updateOfSession(devicesOfSession, data, currentSessionName);
           listDevices(data);
 
@@ -46,7 +45,7 @@ module.exports = function (command) {
       .catch(error => {
         console.error(`status: ${error.status}`);
         console.error(`errorName: ${error.errorName}`);
-        console.error(`message: ${error.message}`);
+        console.error(`message: ${error.stack}`);
       });
   }
 };
