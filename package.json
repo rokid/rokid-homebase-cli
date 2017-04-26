@@ -12,22 +12,22 @@
   "author": "baixin",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.2.0",
     "body-parser": "^1.17.1",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
     "debug": "^2.6.3",
     "express": "^4.15.2",
     "inquirer": "^3.0.6",
+    "ip": "^1.1.5",
     "jayson": "^2.0.3",
     "jsonschema": "^1.1.1",
     "lodash": "^4.17.4",
     "lowdb": "^0.16.0",
+    "ramda": "^0.23.0",
     "request": "^2.81.0",
     "request-promise-native": "^1.0.3",
-    "table": "^4.0.1",
-    "async": "^2.2.0",
-    "ip": "^1.1.5",
-    "ramda": "^0.23.0"
+    "table": "^4.0.1"
   },
   "bin": {
     "rhome": "bin/rhome.js"
