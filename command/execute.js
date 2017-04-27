@@ -5,6 +5,7 @@ const Device = require('../lib/device');
 const v = require('../lib/jsonschema');
 const apiExecute = require('../jsonschema/api-execute.json');
 const execAction = require('../jsonschema/action.json');
+const log = require('../lib/log');
 
 module.exports = function (id, prop, name, val, command) {
 
@@ -32,14 +33,17 @@ module.exports = function (id, prop, name, val, command) {
   targetDevice.sessionName = undefined;
 
   //format action
-  let action = {};
+  let action = {}, validAction = {};
   action.property = prop;
   action.name = name;
+  validAction[prop] = name;
   if (name === 'num') {
     action.value = parseInt(val);
+    validAction[prop] = parseInt(val);
   }
 
-  const actionError = v.validate(action, execAction).errors;
+
+  const actionError = v.validate(validAction, execAction).errors;
   if (actionError.length === 0) {
     session.request('execute', {
       device: Object.assign({}, _.pick(targetDevice, ['deviceId','state','deviceInfo']), {
@@ -50,26 +54,21 @@ module.exports = function (id, prop, name, val, command) {
       .then(data => {
         if (command.data) {
           console.log(colors.yellow('response data:'));
-          console.log(JSON.stringify(data, null, 2));
+          console.log(`${JSON.stringify(data)}\n`);
         }
         const errors = v.validate(data, apiExecute).errors;
         if (errors.length === 0) {
           targetDevice.sessionName = currentSessionName;
-
-          Device.updateStateById(targetDevice.deviceId, currentSessionName, targetDevice.state, data)
-
+          Device.updateStateById(targetDevice.deviceId, currentSessionName, targetDevice.state, data);
+          console.log(JSON.stringify(data));
         } else {
           console.log(colors.yellow('body checked by json schema:'));
-          errors.forEach(error => console.log(colors.red(error.stack)))
+          log.jsonErrors(errors);
         }
       })
-      .catch(error => {
-        console.error(`status: ${error.status}`);
-        console.error(`errorName: ${error.errorName}`);
-        console.error(`message: ${error.message}`);
-      });
+      .catch(error => log.resError(error));
   } else {
     console.log(colors.yellow('input checked by json schema:'));
-    actionError.forEach(error => console.log(colors.red(error.stack)))
+    log.jsonErrors(actionError);
   }
 };

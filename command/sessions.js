@@ -14,9 +14,9 @@ module.exports = function () {
 
   Session.getAllSessions().forEach(s => {
     if (s.name === Session.getCurrentSessionName()) {
-      sessionsTable.push([s.name, s.endpoint, s.userAuth.userId, s.userAuth.userToken, '*****'])
+      sessionsTable.push([s.name, s.endpoint, s.userAuth.userId.slice(0, 8), s.userAuth.userToken.slice(0, 10), '*****'])
     } else {
-      sessionsTable.push([s.name, s.endpoint, s.userAuth.userId, s.userAuth.userToken, '']);
+      sessionsTable.push([s.name, s.endpoint, s.userAuth.userId.slice(0, 8), s.userAuth.userToken.slice(0, 10), '']);
     }
   });
 

@@ -3,6 +3,7 @@ const Session = require('../lib/session');
 const Device = require('../lib/device');
 const v = require('../lib/jsonschema');
 const apiGet = require('../jsonschema/api-get.json');
+const log = require('../lib/log');
 
 module.exports = function (id, command) {
 
@@ -28,7 +29,7 @@ module.exports = function (id, command) {
   }
 
   if (command.local) {
-    listDevice(targetDevice);
+    log.listDevice(targetDevice);
   } else {
     targetDevice.sessionName = undefined;
     session.request('get', {
@@ -38,32 +39,19 @@ module.exports = function (id, command) {
       .then(data => {
         if (command.data) {
           console.log(colors.yellow('response data:'));
-          console.log(JSON.stringify(data, null, 2));
+          console.log(`${JSON.stringify(data)}\n`);
         }
         const errors = v.validate(data, apiGet).errors;
         if (errors.length === 0) {
           targetDevice.sessionName = currentSessionName;
           Device.updateById(targetDevice.deviceId, currentSessionName, data);
 
-          listDevice(data);
+          log.listDevice(data);
         } else {
           console.log(colors.yellow('body checked by json schema:'));
-          errors.forEach(error => console.log(colors.red(error.stack)))
+          log.jsonErrors(errors)
         }
       })
-      .catch(error => {
-        console.error(`status: ${error.status}`);
-        console.error(`errorName: ${error.errorName}`);
-        console.error(`message: ${error.message}`);
-      });
+      .catch(error => log.resError(error));
   }
 };
-
-function listDevice(device) {
-  console.log(`sessionName: ${device.sessionName}`.yellow);
-  console.log(`deviceId: ${device.deviceId}`);
-  console.log(`name: ${device.name}`);
-  console.log(`type: ${device.type}`);
-  console.log(`offline: ${device.offline}`);
-  console.log();
-}

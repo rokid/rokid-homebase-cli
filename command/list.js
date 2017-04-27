@@ -3,6 +3,7 @@ const Session = require('../lib/session');
 const Device = require('../lib/device');
 const v = require('../lib/jsonschema');
 const apiList = require('../jsonschema/api-list.json');
+const log = require('../lib/log');
 
 module.exports = function (command) {
 
@@ -21,43 +22,29 @@ module.exports = function (command) {
       console.log('please list first');
       return;
     }
-    listDevices(devicesOfSession);
+    log.listDevices(devicesOfSession);
   } else {
     session.request('list', { userAuth: Session.getCurrentSession().userAuth })
       .then(data => {
 
         if (command.data) {
           console.log(colors.yellow('response data:'));
-          console.log(JSON.stringify(data, null, 2));
+          console.log(`${JSON.stringify(data)}\n`);
         }
 
         const errors = v.validate(data, apiList).errors;
 
         if (errors.length === 0) {
           Device.updateOfSession(devicesOfSession, data, currentSessionName);
-          listDevices(data);
+          log.listDevices(data);
 
         } else {
           console.log(colors.yellow('body checked by json schema:'));
-          errors.forEach(error => console.log(colors.red(error.stack)))
+          log.jsonErrors(errors);
         }
       })
-      .catch(error => {
-        console.error(`status: ${error.status}`);
-        console.error(`errorName: ${error.errorName}`);
-        console.error(`message: ${error.stack}`);
-      });
+      .catch(error => log.resError(error));
   }
 };
 
-function listDevices(devices) {
-  devices.forEach((device, index) => {
-    console.log(`id: ${index}`.yellow);
-    console.log(`sessionName: ${device.sessionName}`.yellow);
-    console.log(`deviceId: ${device.deviceId}`);
-    console.log(`name: ${device.name}`);
-    console.log(`type: ${device.type}`);
-    console.log(`offline: ${device.offline}`);
-    console.log();
-  });
-}
+
