@@ -38,8 +38,8 @@ module.exports = function (id, prop, name, val, command) {
   action.name = name;
   validAction[prop] = name;
   if (name === 'num') {
-    action.value = parseInt(val);
-    validAction[prop] = parseInt(val);
+    action.value = parseInt(val, 10);
+    validAction[prop] = parseInt(val, 10);
   }
 
 
