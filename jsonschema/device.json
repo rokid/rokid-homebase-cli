@@ -28,7 +28,8 @@
         "dehumidifier",
         "thermostat",
         "humidifier",
-        "door"
+        "door",
+        "carchair"
       ]
     },
     "actions": {
