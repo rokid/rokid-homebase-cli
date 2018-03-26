@@ -7,7 +7,7 @@
     "rhome": "bin/rhome.js"
   },
   "scripts": {
-    "build": "nexe -t 8.9.4 ./index.js -o ./build/rhome",
+    "build": "sh scripts/build.sh",
     "ci": "npm run lint && npm run test",
     "lint": "standard",
     "test": "NODE_ENV=test mocha"
