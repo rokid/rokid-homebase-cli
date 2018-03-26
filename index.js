@@ -5,58 +5,58 @@ const debug = require('debug')
 program
   .command('serve <path> [port]')
   .description('transform local driver to server with default port 3000')
-  .action(wrap('serve'))
+  .action(require('./command/serve'))
 
 program
   .command('ssdp')
   .description('start homebase ssdp broadcast')
-  .action(wrap('ssdp'))
+  .action(require('./command/ssdp'))
 
 program
   .command('add')
   .description('add a session of remote driver')
-  .action(wrap('add'))
+  .action(require('./command/add'))
 
 program
   .command('del <name>')
   .description('delete the session of remote driver')
-  .action(wrap('del'))
+  .action(require('./command/del'))
 
 program
   .command('sessions')
   .description('list all added sessions')
-  .action(wrap('sessions'))
+  .action(require('./command/sessions'))
 
 program
   .command('use <name>')
   .description('user an added session')
-  .action(wrap('use'))
+  .action(require('./command/use'))
 
 program
   .command('list')
   .option('-d, --data', 'show response data of list')
   .option('-l, --local', 'list local devices')
   .description('list all devices of a driver')
-  .action(wrap('list'))
+  .action(require('./command/list'))
 
 program
   .command('get <id>')
   .option('-l, --local', 'get local devices')
   .option('-d, --data', 'show response data of get')
   .description('get current state of a driver')
-  .action(wrap('get'))
+  .action(require('./command/get'))
 
 program
   .command('exec <id> <prop> <name> [val]')
   .option('-d, --data', 'show response data of execute')
   .description('execute the device<id> with target action(e.g color num 256)')
-  .action(wrap('execute'))
+  .action(require('./command/execute'))
 
 // todo
 // program
 //   .command('command <name>')
 //   .description('')
-//   .action(wrap('command'));
+//   .action(require('./command/command'));
 
 program
   .version(pkg.version)
@@ -64,12 +64,3 @@ program
   .parse(process.argv)
 
 if (!program.args.length) program.help()
-
-function wrap (fn) {
-  return function () {
-    if (program.verbose) {
-      debug.enable('rhome')
-    }
-    require('./command/' + fn).apply(this, arguments)
-  }
-}
