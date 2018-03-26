@@ -1,14 +1,12 @@
-# rhome
+# RHome
 
-develop tool for rokid homebase developer whicn can validate response data by json schema of list/get/execute interface, refered in rokid homebase open API.
+使用 rhome 工具通过 json schema 来验证 list/execute 接口的返回值来验证接入 Rokid Homebase 协议。
 
-## install
+## 安装
 
-```bash
-$ npm install -g rokid-homebase-cli
-```
+从 [Release](https://github.com/Rokid/rokid-homebase-cli/releases) 页面下载最新的适合你的操作系统的已打包的程序。
 
-## usage
+## 使用方法
 
 ```
 $ rhome -h
@@ -35,13 +33,9 @@ Usage: rhome [options] [command]
     -v, --verbose  show raw response body
 ```
 
-* `rhome` will create `rhome.json` file in your user root path for the first time, which can modify if necessary.
-* `add` is an interactive command. `name` must be only characters, numbers and underscore, e.g demo_1
-* other commands are command line mode.
-* `-b` show raw response body of list | get | execute.
-* `-l` show local device(s) of list | get
-* `-d` show response data of list | get | execute
-* for detail usage of each command as below
+* `rhome` 会在你的用户根目录创建 `rhome.json` 保存应用数据，你也可以自行直接修改
+* `add` 是一个需要命令行交互的命令. `name` 只能包含字母、数字与下划线, e.g demo_1
+* 更详细的命令可以使用 `-h` 参数查看
 
 ```
 $ rhome list -h
@@ -75,7 +69,7 @@ $ rhome add
 }
 ```
 
-## validate data
+### 验证数据
 
 `rhome` validate response data by json schemas which show detail errors of data.
 
