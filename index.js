@@ -1,6 +1,5 @@
 const program = require('commander')
 const pkg = require('./package.json')
-const debug = require('debug')
 
 program
   .command('serve <path> [port]')
