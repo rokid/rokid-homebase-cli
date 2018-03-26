@@ -1,12 +1,18 @@
-# RHome
+# rhome
 
 使用 rhome 工具通过 json schema 来验证 list/execute 接口的返回值来验证接入 Rokid Homebase 协议。
+
+## 功能
+
+- 调用 list|get|execute 接口。
+
+- 使用 jsonshema 对返回的数据格式进行校验，并指出具体错误信息。
 
 ## 安装
 
 从 [Release](https://github.com/Rokid/rokid-homebase-cli/releases) 页面下载最新的适合你的操作系统的已打包的程序。
 
-## 使用方法
+## 使用
 
 ```
 $ rhome -h
@@ -16,43 +22,34 @@ Usage: rhome [options] [command]
 
   Commands:
 
-    serve <path> [port]                      transform local driver to server with default port 3000
-    ssdp                                     start homebase ssdp broadcast
-    add                                      add a session of remote driver
-    del <name>                               delete the session of remote driver
-    sessions                                 list all added sessions
-    use <name>                               user an added session
-    list [options]                           list all devices of a driver
-    get [options] <id>                       get current state of a driver
-    exec [options] <id> <prop> <name> [val]  execute the device<id> with target action(e.g color num 256)
+    serve <path> [port]            transform local driver to server with default port 3000
+    add                            add a remote driver's session
+    del <name>                     delete a remote driver's session
+    sessions                       list all added sessions
+    use <name>                     user an added session
+    list                           list a driver's all devices
+    get <id>                       get one device's current state
+    exec <id> <prop> <name> [val]  execute the device<id> with target action(e.g color num 256)
+    *                              [object Object]
+    help [cmd]                     display help for [cmd]
+
+  show help
 
   Options:
 
     -h, --help     output usage information
     -V, --version  output the version number
-    -v, --verbose  show raw response body
+    -b, --body     show response body of list/get/execute
+    -l, --local    list local devices
 ```
 
-* `rhome` 会在你的用户根目录创建 `rhome.json` 保存应用数据，你也可以自行直接修改
-* `add` 是一个需要命令行交互的命令. `name` 只能包含字母、数字与下划线, e.g demo_1
-* 更详细的命令可以使用 `-h` 参数查看
+* `rhome` 运行后，将在用户目录下新建 **rhome.json** 文件，保存 sessions、devices、currentSession 信息。如有必要，开发者可以进行修改。
+* `add` 是交互式命令。 name 必须由 **字母**、**数字** 和 **下划线** 组成。例如: demo_1。 其余为命令行模式。
+* `sessions` 命令显示已添加的所有 session，和显示当前使用的 session。默认使用第一个 session，或通过 `use` 指定。
+* `-b` 显示 list | get | execute 的原始返回。
+* `-l` 显示 **rhome.json** 文件中的当前 session 下的所有设备。
 
-```
-$ rhome list -h
-
-  Usage: list [options]
-
-  list all devices of a driver
-
-  Options:
-
-    -h, --help   output usage information
-    -d, --data   show response data of list
-    -l, --local  list local devices
-
-```
-
-a simple sample of rhome:
+rhome demo:
 
 ```
 $ rhome add
@@ -69,11 +66,11 @@ $ rhome add
 }
 ```
 
-### 验证数据
+## 数据校验
 
-`rhome` validate response data by json schemas which show detail errors of data.
+`rhome` 将对返回数据进行校验，并显示具体的错误信息。
 
-* success response data
+* 数据格式正确
 
 ```
 $ rhome list
@@ -86,9 +83,9 @@ type: light
 offline: false
 ```
 
-* error response data
+* 数据格式错误
 
-In this case, you can check your errors of specific data shown in error message.
+如有错误，将会显示具体的错误信息，以供参考。
 
 ```
 $ rhome list
