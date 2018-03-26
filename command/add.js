@@ -1,25 +1,24 @@
-const inquirer = require('inquirer');
-const Session = require('../lib/session');
+const inquirer = require('inquirer')
+const Session = require('../lib/session')
 
 module.exports = function () {
-
   const questions = [
     {
       type: 'input',
       name: 'name',
       message: 'remote driver\'s name',
       validate: function (value) {
-        const isName = /^\w+$/.test(value);
-        const isExisted = Session.getSessionByName(value);
-        //add first time
+        const isName = /^\w+$/.test(value)
+        const isExisted = Session.getSessionByName(value)
+        // add first time
         if (!isName) {
           return 'Name must be only characters, numbers and underscore, please input again.'
         }
         if (Session.getAllSessions().length === 0) {
-          return true;
+          return true
         }
         if (!isExisted) {
-          return true;
+          return true
         } else {
           return 'It\'s existed, please input again'
         }
@@ -40,11 +39,11 @@ module.exports = function () {
       type: 'input',
       name: 'userToken',
       message: 'userToken in userAuth. If null, skip'
-    },
-  ];
+    }
+  ]
 
   inquirer.prompt(questions).then(function (answers) {
-    console.log(JSON.stringify(answers, null, 2));
+    console.log(JSON.stringify(answers, null, 2))
 
     const newSession = {
       name: answers.name,
@@ -53,13 +52,13 @@ module.exports = function () {
         userId: answers.userId,
         userToken: answers.userToken
       }
-    };
+    }
 
-    Session.addSession(newSession);
+    Session.addSession(newSession)
 
-    //default sessions[0] in use
+    // default sessions[0] in use
     if (!Session.getCurrentSessionName()) {
       Session.setCurrentSession(answers.name)
     }
-  });
-};
+  })
+}

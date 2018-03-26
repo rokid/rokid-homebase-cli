@@ -1,58 +1,58 @@
-const program = require('commander');
-const pkg = require('./package.json');
-const debug = require('debug');
+const program = require('commander')
+const pkg = require('./package.json')
+const debug = require('debug')
 
 program
   .command('serve <path> [port]')
   .description('transform local driver to server with default port 3000')
-  .action(wrap('serve'));
+  .action(wrap('serve'))
 
 program
   .command('ssdp')
   .description('start homebase ssdp broadcast')
-  .action(wrap('ssdp'));
+  .action(wrap('ssdp'))
 
 program
   .command('add')
   .description('add a session of remote driver')
-  .action(wrap('add'));
+  .action(wrap('add'))
 
 program
   .command('del <name>')
   .description('delete the session of remote driver')
-  .action(wrap('del'));
+  .action(wrap('del'))
 
 program
   .command('sessions')
   .description('list all added sessions')
-  .action(wrap('sessions'));
+  .action(wrap('sessions'))
 
 program
   .command('use <name>')
   .description('user an added session')
-  .action(wrap('use'));
+  .action(wrap('use'))
 
 program
   .command('list')
   .option('-d, --data', 'show response data of list')
   .option('-l, --local', 'list local devices')
   .description('list all devices of a driver')
-  .action(wrap('list'));
+  .action(wrap('list'))
 
 program
   .command('get <id>')
   .option('-l, --local', 'get local devices')
   .option('-d, --data', 'show response data of get')
   .description('get current state of a driver')
-  .action(wrap('get'));
+  .action(wrap('get'))
 
 program
   .command('exec <id> <prop> <name> [val]')
   .option('-d, --data', 'show response data of execute')
   .description('execute the device<id> with target action(e.g color num 256)')
-  .action(wrap('execute'));
+  .action(wrap('execute'))
 
-//todo
+// todo
 // program
 //   .command('command <name>')
 //   .description('')
@@ -61,15 +61,15 @@ program
 program
   .version(pkg.version)
   .option('-v, --verbose', 'show raw response body')
-  .parse(process.argv);
+  .parse(process.argv)
 
-if (!program.args.length) program.help();
+if (!program.args.length) program.help()
 
-function wrap(fn) {
-  return function(){
+function wrap (fn) {
+  return function () {
     if (program.verbose) {
-      debug.enable('rhome');
+      debug.enable('rhome')
     }
     require('./command/' + fn).apply(this, arguments)
-  };
+  }
 }

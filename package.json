@@ -1,8 +1,14 @@
 {
   "name": "rokid-homebase-cli",
+  "description": "rokid-homebase-cli",
   "version": "1.1.4",
   "main": "index.js",
+  "bin": {
+    "rhome": "bin/rhome.js"
+  },
   "scripts": {
+    "build": "nexe -t 8.9.4 ./index.js -o ./bin/rhome",
+    "lint": "standard",
     "test": "NODE_ENV=test mocha"
   },
   "repository": {
@@ -10,7 +16,7 @@
     "url": "git@github.com:Rokid/rokid-homebase-cli.git"
   },
   "author": "baixin",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "async": "^2.2.0",
     "body-parser": "^1.17.1",
@@ -29,15 +35,22 @@
     "request-promise-native": "^1.0.3",
     "table": "^4.0.1"
   },
-  "bin": {
-    "rhome": "bin/rhome.js"
-  },
   "directories": {
     "test": "test"
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "mocha": "^3.2.0"
+    "mocha": "^3.2.0",
+    "nexe": "^2.0.0-rc.26",
+    "standard": "^11.0.1"
   },
-  "description": "rokid-homebase-cli"
+  "standard": {
+    "env": [
+      "mocha"
+    ],
+    "ignore": [
+      "coverage",
+      "lib/protocol/ssdp"
+    ]
+  }
 }
