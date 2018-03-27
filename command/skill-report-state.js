@@ -5,7 +5,7 @@ const v = require('../lib/jsonschema')
 const apiGet = require('../jsonschema/api-get.json')
 const log = require('../lib/log')
 
-module.exports = function (id, command) {
+module.exports = async function (id, command) {
   const currentSessionName = Session.getCurrentSessionName()
   const session = new Session(currentSessionName)
 
@@ -31,26 +31,20 @@ module.exports = function (id, command) {
     log.listDevice(targetDevice)
   } else {
     targetDevice.sessionName = undefined
-    session.request('get', {
-      device: targetDevice,
-      userAuth: Session.getCurrentSession().userAuth
-    })
-      .then(data => {
-        if (command.data) {
-          console.log(colors.yellow('response data:'))
-          console.log(`${JSON.stringify(data)}\n`)
-        }
-        const errors = v.validate(data, apiGet).errors
-        if (errors.length === 0) {
-          targetDevice.sessionName = currentSessionName
-          Device.updateById(targetDevice.deviceId, currentSessionName, data)
+    const [ data ] = await session.request('query', [ targetDevice ])
+    if (command.data) {
+      console.log(colors.yellow('response data:'))
+      console.log(`${JSON.stringify(data)}\n`)
+    }
+    const errors = v.validate(data, apiGet).errors
+    if (errors.length === 0) {
+      targetDevice.sessionName = currentSessionName
+      Device.updateById(targetDevice.deviceId, currentSessionName, data)
 
-          log.listDevice(data)
-        } else {
-          console.log(colors.yellow('body checked by json schema:'))
-          log.jsonErrors(errors)
-        }
-      })
-      .catch(error => log.resError(error))
+      log.listDevice(data)
+    } else {
+      console.log(colors.yellow('body checked by json schema:'))
+      log.jsonErrors(errors)
+    }
   }
 }

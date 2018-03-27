@@ -1,4 +1,6 @@
 const program = require('commander')
+const path = require('path')
+process.env['NODE_CONFIG_DIR'] = path.join(__dirname, 'config')
 
 require('./lib/update-manager').checkUpdates()
 const pkg = require('./package.json')
@@ -9,55 +11,54 @@ program
   .action(require('./command/serve'))
 
 program
-  .command('ssdp')
-  .description('start homebase ssdp broadcast')
-  .action(require('./command/ssdp'))
-
-program
   .command('add')
   .description('add a session of remote driver')
-  .action(require('./command/add'))
+  .action(require('./command/session-add'))
 
 program
   .command('del <name>')
   .description('delete the session of remote driver')
-  .action(require('./command/del'))
+  .action(require('./command/session-del'))
 
 program
   .command('sessions')
   .description('list all added sessions')
-  .action(require('./command/sessions'))
+  .action(require('./command/session-list'))
 
 program
   .command('use <name>')
   .description('user an added session')
-  .action(require('./command/use'))
+  .action(require('./command/session-use'))
 
 program
-  .command('list')
+  .command('discover')
   .option('-d, --data', 'show response data of list')
   .option('-l, --local', 'list local devices')
   .description('list all devices of a driver')
-  .action(require('./command/list'))
+  .action(require('./command/skill-discover'))
 
 program
-  .command('get <id>')
+  .command('control <id> <directive> [value]')
+  .option('-d, --data', 'show response data of execute')
+  .description('execute the device<id> with target action(e.g color num 256)')
+  .action(require('./command/skill-control'))
+
+program
+  .command('report-state <id>')
   .option('-l, --local', 'get local devices')
   .option('-d, --data', 'show response data of get')
   .description('get current state of a driver')
-  .action(require('./command/get'))
+  .action(require('./command/skill-report-state'))
 
 program
-  .command('exec <id> <prop> <name> [val]')
-  .option('-d, --data', 'show response data of execute')
-  .description('execute the device<id> with target action(e.g color num 256)')
-  .action(require('./command/execute'))
+  .command('serve <path> [port]')
+  .description('transform local driver to server with default port 3000')
+  .action(require('./command/serve'))
 
-// todo
-// program
-//   .command('command <name>')
-//   .description('')
-//   .action(require('./command/command'));
+program
+  .command('ssdp')
+  .description('start homebase ssdp broadcast')
+  .action(require('./command/ssdp'))
 
 program
   .version(pkg.version)

@@ -7,3 +7,5 @@ bin/rhome
 bin/rhome.exe
 build/*
 !build/.git-keep
+
+config/local.js

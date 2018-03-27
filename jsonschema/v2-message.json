@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "header": {
+      "$ref": "/v2-header"
+    },
+    "endpoints": {
+      "type": "array",
+      "items": {
+        "$ref": "/v2-endpoint",
+        "required": [
+          "endpointId",
+          "additionalInfo",
+          "state"
+        ]
+      }
+    },
+    "payload": {
+      "type": "object"
+    }
+  }
+}

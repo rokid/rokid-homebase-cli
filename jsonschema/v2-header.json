@@ -1,0 +1,47 @@
+{
+  "type": "object",
+  "required": [
+    "messageId",
+    "namespace",
+    "name",
+    "payloadVersion"
+  ],
+  "properties": {
+    "messageId": {
+      "type": "string"
+    },
+    "namespace": {
+      "type": "string",
+      "enum": [
+        "Rokid",
+        "Rokid.Discovery",
+        "Rokid.Control",
+        "Rokid.Query"
+      ]
+    },
+    "name": {
+      "type": "string"
+    },
+    "payloadVersion": {
+      "type": "string"
+    },
+    "authentication": {
+      "type": "object",
+      "required": [
+        "type",
+        "token"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "BearerToken"
+          ]
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
