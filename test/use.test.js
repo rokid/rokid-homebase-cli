@@ -1,6 +1,6 @@
 const expect = require('chai').expect
 const db = require('../lib/db')
-const use = require('../command/use')
+const use = require('../command/session-use')
 
 describe('use', function () {
   beforeEach(function () {

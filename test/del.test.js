@@ -1,6 +1,6 @@
 const expect = require('chai').expect
 const db = require('../lib/db')
-const del = require('../command/del')
+const del = require('../command/session-del')
 
 describe('del', function () {
   before(function () {
