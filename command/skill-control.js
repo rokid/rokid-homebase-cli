@@ -1,10 +1,8 @@
-const _ = require('lodash')
 const colors = require('colors')
 const Session = require('../lib/session')
 const Device = require('../lib/device')
 const v = require('../lib/jsonschema')
 const apiExecute = require('../jsonschema/api-execute.json')
-const execAction = require('../jsonschema/action.json')
 const log = require('../lib/log')
 
 module.exports = async function skillControl (id, directive, value, command) {
