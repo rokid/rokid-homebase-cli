@@ -1,45 +1,52 @@
 const expect = require('chai').expect
+const _ = require('lodash')
 const db = require('../lib/db')
 const Device = require('../lib/device')
 
 describe('device', function () {
   before(function () {
     const dev1 = {
-      name: 'demo1',
-      deviceId: 'fb02ea22-b0b7-4114-a911-8ce1b97ef3e5',
-      type: 'light',
-      state: {
-        switch: 'on'
-      },
-      actions: {
-        switch: ['on', 'off']
-      },
+      displayName: 'demo1',
+      endpointId: 'fb02ea22-b0b7-4114-a911-8ce1b97ef3e5',
+      displayType: 'light',
+      state: [{
+        interface: 'switch',
+        value: 'on'
+      }],
+      capabilities: [{
+        interface: 'switch',
+        supportedOperations: ['on', 'off']
+      }],
       sessionName: 'demo'
     }
 
     const dev2 = {
-      name: 'demo2',
-      deviceId: '934ab762-4136-4985-bc69-5c8a69cd7092',
-      type: 'switch',
-      state: {
-        switch: 'on'
-      },
-      actions: {
-        switch: ['on', 'off']
-      },
+      displayName: 'demo2',
+      endpointId: '934ab762-4136-4985-bc69-5c8a69cd7092',
+      displayType: 'switch',
+      state: [{
+        interface: 'switch',
+        value: 'on'
+      }],
+      capabilities: [{
+        interface: 'switch',
+        supportedOperations: ['on', 'off']
+      }],
       sessionName: 'demo'
     }
 
     const dev3 = {
-      name: 'demo3',
-      deviceId: '53a84e15-b855-4348-b4b4-f50795760b72',
-      type: 'switch',
-      state: {
-        switch: 'on'
-      },
-      actions: {
-        switch: ['on', 'off']
-      },
+      displayName: 'demo3',
+      endpointId: '53a84e15-b855-4348-b4b4-f50795760b72',
+      displayType: 'switch',
+      state: [{
+        interface: 'switch',
+        value: 'on'
+      }],
+      capabilities: [{
+        interface: 'switch',
+        supportedOperations: ['on', 'off']
+      }],
       sessionName: 'test'
     }
 
@@ -71,11 +78,14 @@ describe('device', function () {
 
   describe('#updateStateById()', function () {
     it('state should be updated', function (done) {
-      Device.updateStateById('fb02ea22-b0b7-4114-a911-8ce1b97ef3e5', 'demo', {switch: 'on'}, {switch: 'off'})
+      Device.updateStateById('fb02ea22-b0b7-4114-a911-8ce1b97ef3e5', 'demo',
+        [{interface: 'switch', value: 'on'}],
+        [{interface: 'switch', value: 'off'}]
+      )
       const dev = db.get('devices')
-        .filter({deviceId: 'fb02ea22-b0b7-4114-a911-8ce1b97ef3e5'})
+        .find({endpointId: 'fb02ea22-b0b7-4114-a911-8ce1b97ef3e5'})
         .value()
-      expect(dev[0].state.switch).to.equal('off')
+      expect(_.find(dev.state, { interface: 'switch' }).value).to.equal('off')
       done()
     })
   })
@@ -84,13 +94,13 @@ describe('device', function () {
     it('all devices of session should be updated', function (done) {
       const oldDevs = db.get('devices').value()
       const newDevs = oldDevs.map(dev => {
-        dev.state.switch = 'off'
+        _.find(dev.state, { interface: 'switch' }).value = 'off'
       })
       Device.updateOfSession(oldDevs, newDevs, 'demo')
       db
         .get('devices')
         .value()
-        .forEach(dev => expect(dev.state.switch).to.equal('off'))
+        .forEach(dev => expect(_.find(dev.state, { interface: 'switch' }).value).to.equal('off'))
       done()
     })
   })
