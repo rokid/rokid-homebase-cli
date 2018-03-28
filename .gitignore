@@ -7,5 +7,7 @@ bin/rhome
 bin/rhome.exe
 build/*
 !build/.git-keep
+/.nyc_output
+/coverage
 
 config/local.js

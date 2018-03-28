@@ -1,8 +1,6 @@
 const colors = require('colors')
 const Session = require('../lib/session')
 const Device = require('../lib/device')
-const v = require('../lib/jsonschema')
-const apiList = require('../jsonschema/api-list.json')
 const log = require('../lib/log')
 
 module.exports = async function skillDiscover (command) {
@@ -23,20 +21,13 @@ module.exports = async function skillDiscover (command) {
     }
     log.listDevices(devicesOfSession)
   } else {
-    const data = await session.request('discover')
+    const endpoints = await session.request('discover')
     if (command.data) {
       console.log(colors.yellow('response data:'))
-      console.log(`${JSON.stringify(data)}\n`)
+      console.log(`${JSON.stringify(endpoints)}\n`)
     }
 
-    const errors = v.validate(data, apiList).errors
-
-    if (errors.length === 0) {
-      Device.updateOfSession(devicesOfSession, data, currentSessionName)
-      log.listDevices(data)
-    } else {
-      console.log(colors.yellow('body checked by json schema:'))
-      log.jsonErrors(errors)
-    }
+    Device.updateOfSession(devicesOfSession, endpoints, currentSessionName)
+    log.listDevices(endpoints)
   }
 }

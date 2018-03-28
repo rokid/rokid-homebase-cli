@@ -1,8 +1,6 @@
 const colors = require('colors')
 const Session = require('../lib/session')
 const Device = require('../lib/device')
-const v = require('../lib/jsonschema')
-const apiGet = require('../jsonschema/api-get.json')
 const log = require('../lib/log')
 
 module.exports = async function (id, command) {
@@ -30,21 +28,13 @@ module.exports = async function (id, command) {
   if (command.local) {
     log.listDevice(targetDevice)
   } else {
-    targetDevice.sessionName = undefined
     const [ data ] = await session.request('query', [ targetDevice ])
     if (command.data) {
       console.log(colors.yellow('response data:'))
       console.log(`${JSON.stringify(data)}\n`)
     }
-    const errors = v.validate(data, apiGet).errors
-    if (errors.length === 0) {
-      targetDevice.sessionName = currentSessionName
-      Device.updateById(targetDevice.deviceId, currentSessionName, data)
 
-      log.listDevice(data)
-    } else {
-      console.log(colors.yellow('body checked by json schema:'))
-      log.jsonErrors(errors)
-    }
+    Device.updateById(targetDevice.deviceId, currentSessionName, data)
+    log.listDevice(data)
   }
 }
