@@ -4,7 +4,7 @@ const db = require('../lib/db')
 const Device = require('../lib/device')
 
 describe('device', function () {
-  before(function () {
+  beforeEach(function () {
     const dev1 = {
       displayName: 'demo1',
       endpointId: 'fb02ea22-b0b7-4114-a911-8ce1b97ef3e5',
@@ -50,10 +50,7 @@ describe('device', function () {
       sessionName: 'test'
     }
 
-    db.get('devices')
-      .push(dev1)
-      .push(dev2)
-      .push(dev3)
+    db.set('devices', [dev1, dev2, dev3])
       .write()
   })
 
@@ -95,6 +92,7 @@ describe('device', function () {
       const oldDevs = db.get('devices').value()
       const newDevs = oldDevs.map(dev => {
         _.find(dev.state, { interface: 'switch' }).value = 'off'
+        return dev
       })
       Device.updateOfSession(oldDevs, newDevs, 'demo')
       db
