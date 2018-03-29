@@ -28,6 +28,6 @@ module.exports = async function skillDiscover (command) {
     }
 
     Device.updateOfSession(devicesOfSession, endpoints, currentSessionName)
-    log.listDevices(endpoints)
+    log.listDevices(Device.getBySessionName(currentSessionName))
   }
 }
