@@ -1,5 +1,5 @@
-const expect = require('chai').expect
 const _ = require('lodash')
+const assert = require('assert')
 const db = require('../lib/db')
 const Device = require('../lib/device')
 
@@ -56,8 +56,8 @@ describe('device', function () {
 
   describe('#getAllDevices()', function () {
     it('should be an array', function (done) {
-      expect(Device.getAllDevices()).to.be.an('array')
-      expect(Device.getAllDevices().length).to.equal(3)
+      assert(Array.isArray(Device.getAllDevices()))
+      assert(Device.getAllDevices().length === 3)
       done()
     })
   })
@@ -65,9 +65,9 @@ describe('device', function () {
   describe('#getBySessionName()', function () {
     it('should get all devices of target session', function (done) {
       const devs = Device.getBySessionName('demo')
-      expect(devs).to.be.an('array')
+      assert(Array.isArray(devs))
       devs.forEach(dev => {
-        expect(dev.sessionName).to.equal('demo')
+        assert(dev.sessionName === 'demo')
       })
       done()
     })
@@ -82,7 +82,7 @@ describe('device', function () {
       const dev = db.get('devices')
         .find({endpointId: 'fb02ea22-b0b7-4114-a911-8ce1b97ef3e5'})
         .value()
-      expect(_.find(dev.state, { interface: 'switch' }).value).to.equal('off')
+      assert(_.find(dev.state, { interface: 'switch' }).value === 'off')
       done()
     })
   })
@@ -98,7 +98,7 @@ describe('device', function () {
       db
         .get('devices')
         .value()
-        .forEach(dev => expect(_.find(dev.state, { interface: 'switch' }).value).to.equal('off'))
+        .forEach(dev => assert(_.find(dev.state, { interface: 'switch' }).value === 'off'))
       done()
     })
   })
@@ -107,7 +107,7 @@ describe('device', function () {
     it('all devices of session should be removed', function (done) {
       Device.removeBySessionName('test')
       const devs = db.get('devices').filter({sessionName: 'test'}).value()
-      expect(devs.length).to.equal(0)
+      assert(devs.length === 0)
       done()
     })
   })

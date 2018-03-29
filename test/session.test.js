@@ -1,4 +1,4 @@
-const expect = require('chai').expect
+const assert = require('assert')
 const db = require('../lib/db')
 const Session = require('../lib/session')
 
@@ -22,21 +22,21 @@ describe('session', function () {
 
   describe('#getAllSessions()', function () {
     it('allSessions should be an array', function (done) {
-      expect(Session.getAllSessions()).to.be.an('array')
+      assert(Array.isArray(Session.getAllSessions()))
       done()
     })
   })
 
   describe('#getCurrentSessionName()', function () {
     it('currentSessionName should be a string', function (done) {
-      expect(Session.getCurrentSessionName()).to.be.a('string')
+      assert(typeof Session.getCurrentSessionName() === 'string')
       done()
     })
   })
 
   describe('#getCurrentSession()', function () {
     it('currentSession should be an object', function (done) {
-      expect(Session.getCurrentSession()).to.be.a('object')
+      assert(Session.getCurrentSession() != null)
       done()
     })
   })
@@ -44,15 +44,15 @@ describe('session', function () {
   describe('#setCurrentSession()', function () {
     it('currentSession should be updated', function (done) {
       Session.setCurrentSession('test')
-      expect(db.get('currentSession').value()).to.equal('test')
+      assert(db.get('currentSession').value() === 'test')
       done()
     })
   })
 
   describe('#getSessionByName()', function () {
     it('session get by name should be an object and name should be equal to input', function (done) {
-      expect(Session.getSessionByName('demo')).to.be.an('object')
-      expect(Session.getSessionByName('demo').name).to.equal('demo')
+      assert(Session.getSessionByName('demo') != null)
+      assert(Session.getSessionByName('demo').name === 'demo')
       done()
     })
   })
@@ -69,8 +69,8 @@ describe('session', function () {
       }
 
       Session.addSession(test)
-      expect(db.get('sessions').find({name: test.name}).value()).to.be.an('object')
-      expect(db.get('sessions').find({name: test.name}).value().name).to.equal('test')
+      assert(db.get('sessions').find({name: test.name}).value() != null)
+      assert(db.get('sessions').find({name: test.name}).value().name === 'test')
       done()
     })
   })
@@ -78,15 +78,15 @@ describe('session', function () {
   describe('#delSession()', function () {
     it('should not be found in sessions after delete', function (done) {
       Session.delSession('demo')
-      expect(typeof db.get('sessions').find({name: 'demo'}).value()).to.equal('undefined')
+      assert(typeof db.get('sessions').find({name: 'demo'}).value() === 'undefined')
       done()
     })
 
     it('currentSessionName should be changed if deleting currentSession', function (done) {
       Session.delSession('demo')
       const currentSessionName = Session.getCurrentSessionName()
-      expect(currentSessionName).to.not.equal('demo')
-      expect(currentSessionName).to.equal('test')
+      assert(currentSessionName !== 'demo')
+      assert(currentSessionName === 'test')
       done()
     })
 
@@ -94,7 +94,7 @@ describe('session', function () {
       Session.delSession('demo')
       Session.delSession('test')
       const currentSessionName = Session.getCurrentSessionName()
-      expect(typeof currentSessionName).to.equal('undefined')
+      assert(typeof currentSessionName === 'undefined')
       done()
     })
   })

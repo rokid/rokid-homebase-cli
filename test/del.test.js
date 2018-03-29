@@ -1,4 +1,4 @@
-const expect = require('chai').expect
+const assert = require('assert')
 const db = require('../lib/db')
 const del = require('../command/session-del')
 
@@ -54,13 +54,13 @@ describe('del', function () {
   it('session should be deleted', function (done) {
     del('test-del')
     const session = db.get('sessions').find({sessionName: 'test-del'}).value()
-    expect(typeof session).to.equal('undefined')
+    assert(typeof session === 'undefined')
     done()
   })
 
   it('currentSessionName should be changed', function (done) {
     const currentSessionName = db.get('currentSession').value()
-    expect(currentSessionName).to.not.equal('test-del')
+    assert(currentSessionName !== 'test-del')
     done()
   })
 })

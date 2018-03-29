@@ -44,7 +44,6 @@
   },
   "devDependencies": {
     "@types/urllib": "^2.25.0",
-    "chai": "^3.5.0",
     "intelli-espower-loader": "^1.0.1",
     "mocha": "^5.0.5",
     "nexe": "^2.0.0-rc.26",
