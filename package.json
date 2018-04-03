@@ -1,7 +1,7 @@
 {
   "name": "rokid-homebase-cli",
   "description": "rokid-homebase-cli",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "main": "index.js",
   "bin": {
     "rhome": "bin/rhome.js"
