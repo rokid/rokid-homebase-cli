@@ -34,7 +34,9 @@
     "ramda": "^0.23.0",
     "request": "^2.81.0",
     "request-promise-native": "^1.0.3",
-    "table": "^4.0.1"
+    "semver": "^5.5.0",
+    "table": "^4.0.1",
+    "urllib": "^2.27.0"
   },
   "directories": {
     "test": "test"

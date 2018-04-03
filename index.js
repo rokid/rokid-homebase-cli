@@ -1,4 +1,6 @@
 const program = require('commander')
+
+require('./lib/update-manager').checkUpdates()
 const pkg = require('./package.json')
 
 program
