@@ -35,7 +35,7 @@ describe('protocol/v2', () => {
         displayName: 'foobar',
         displayType: 'light',
         capabilities: [],
-        state: []
+        states: []
       }
       await Promise.all(Object.keys(device).map(async key => {
         const dvc = _.omit(device, key)
@@ -66,7 +66,7 @@ describe('protocol/v2', () => {
       requestMock = async (url, data) => {
         assert(data != null)
         assert(Array.isArray(data.endpoints))
-        assert(data.endpoints[0].state != null)
+        assert(data.endpoints[0].states != null)
         assert(data.endpoints[0].additionalInfo != null)
         assert(data.header != null)
         assert(data.header.authentication != null)
@@ -75,7 +75,7 @@ describe('protocol/v2', () => {
         return constructMessage({ namespace: 'Rokid', name: 'Response', endpoints: data.endpoints })
       }
       const endpoints = await protocol.control('Switch.On', [
-        { endpointId: '123', additionalInfo: {}, state: [] }
+        { endpointId: '123', additionalInfo: {}, states: [] }
       ], {})
       assert(Array.isArray(endpoints))
       assert(endpoints.length === 1)
@@ -87,7 +87,7 @@ describe('protocol/v2', () => {
       requestMock = async (url, data) => {
         assert(data != null)
         assert(Array.isArray(data.endpoints))
-        assert(data.endpoints[0].state != null)
+        assert(data.endpoints[0].states != null)
         assert(data.endpoints[0].additionalInfo != null)
         assert(data.header != null)
         assert(data.header.authentication != null)
@@ -96,7 +96,7 @@ describe('protocol/v2', () => {
         return constructMessage({ namespace: 'Rokid', name: 'Response', endpoints: data.endpoints })
       }
       const endpoints = await protocol.query([
-        { endpointId: '123', additionalInfo: {}, state: [] }
+        { endpointId: '123', additionalInfo: {}, states: [] }
       ])
       assert(Array.isArray(endpoints))
       assert(endpoints.length === 1)
