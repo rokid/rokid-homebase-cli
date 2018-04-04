@@ -14,8 +14,7 @@
         "$ref": "/v2-endpoint",
         "required": [
           "endpointId",
-          "additionalInfo",
-          "state"
+          "states"
         ]
       }
     },

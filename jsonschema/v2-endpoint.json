@@ -27,6 +27,9 @@
     "recommendRoomName": {
       "type": "string"
     },
+    "offline": {
+      "type": "boolean"
+    },
     "additionalInfo": {
       "type": "object",
       "additionalProperties": {
@@ -51,7 +54,7 @@
         "$ref": "/v2-capability"
       }
     },
-    "state": {
+    "states": {
       "type": "array",
       "items": {
         "$ref": "/v2-interface-state"

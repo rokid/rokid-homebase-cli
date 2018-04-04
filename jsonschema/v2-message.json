@@ -11,7 +11,7 @@
         "required": [
           "endpointId",
           "additionalInfo",
-          "state"
+          "states"
         ]
       }
     },
