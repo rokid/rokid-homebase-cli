@@ -1,5 +1,6 @@
 const Session = require('../lib/session')
 const Device = require('../lib/device')
+const log = require('../lib/log')
 
 module.exports = async function skillControl (id, directive, value, command) {
   const currentSessionName = Session.getCurrentSessionName()
@@ -27,5 +28,5 @@ module.exports = async function skillControl (id, directive, value, command) {
   const endpoint = await session.request('control', directive, targetDevice, { value })
 
   Device.updateStateById(targetDevice.deviceId, currentSessionName, targetDevice.state, endpoint.state)
-  console.log(JSON.stringify(endpoint, null, 2))
+  log.listDevice(Device.getBySessionName(currentSessionName).find(it => it.endpointId === id), { states: true })
 }

@@ -36,6 +36,6 @@ module.exports = async function (id, command) {
     }
 
     Device.updateById(targetDevice.endpointId, currentSessionName, data)
-    log.listDevice(Device.getBySessionName(currentSessionName).find(it => it.endpointId === targetDevice.endpointId))
+    log.listDevice(Device.getBySessionName(currentSessionName).find(it => it.endpointId === targetDevice.endpointId), { states: true })
   }
 }
