@@ -16,7 +16,8 @@
             "name": {
               "type": "string",
               "enum": [
-                "DiscoveryResponse"
+                "DiscoveryResponse",
+                "ErrorResponse"
               ]
             }
           }
@@ -24,32 +25,47 @@
       ]
     },
     "payload": {
-      "type": "object",
-      "required": [
-        "endpoints"
-      ],
-      "properties": {
-        "endpoints": {
-          "type": "array",
-          "items": {
-            "allOf": [
-              {
-                "$ref": "/v2-endpoint"
-              },
-              {
-                "required": [
-                  "endpointId",
-                  "displayType",
-                  "displayName",
-                  "additionalInfo",
-                  "capabilities",
-                  "states"
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "endpoints"
+          ],
+          "properties": {
+            "endpoints": {
+              "type": "array",
+              "items": {
+                "allOf": [
+                  {
+                    "$ref": "/v2-endpoint"
+                  },
+                  {
+                    "required": [
+                      "endpointId",
+                      "displayType",
+                      "displayName",
+                      "additionalInfo",
+                      "capabilities",
+                      "states"
+                    ]
+                  }
                 ]
               }
-            ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
           }
         }
-      }
+      ]
     }
   }
 }

@@ -71,9 +71,8 @@ describe('protocol/v1', () => {
         assert(data.device.userAuth.userToken === 'bar')
         return { status: 0, data: data.device.state }
       }
-      const endpoints = await protocol.control('Switch.On', [ { deviceId: '123', deviceInfo: {}, state: {} } ], {})
-      assert(Array.isArray(endpoints))
-      assert(endpoints.length === 1)
+      const endpoint = await protocol.control('switch.on', { deviceId: '123', deviceInfo: {}, state: {} }, {})
+      assert(endpoint != null)
     })
   })
 
@@ -89,9 +88,8 @@ describe('protocol/v1', () => {
         assert(data.userAuth.userToken === 'bar')
         return { status: 0, data: Object.assign({ name: 'foobar', type: 'light', actions: {} }, data.device) }
       }
-      const endpoints = await protocol.query([ { deviceId: '123', deviceInfo: {}, state: {} } ])
-      assert(Array.isArray(endpoints))
-      assert(endpoints.length === 1)
+      const endpoint = await protocol.query({ deviceId: '123', deviceInfo: {}, state: {} })
+      assert(endpoint != null)
     })
   })
 

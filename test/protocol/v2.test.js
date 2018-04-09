@@ -20,9 +20,9 @@ describe('protocol/v2', () => {
         assert(data != null)
         assert(data.header != null)
         assert(data.header.authentication != null)
-        assert(data.header.authentication.type === 'Bearer')
+        assert(data.header.authentication.type === 'BearerToken')
         assert(data.header.authentication.token === 'bar')
-        return constructMessage({ namespace: 'Rokid', name: 'Response', endpoints: [] })
+        return constructMessage({ namespace: 'Rokid', name: 'DiscoveryResponse', payload: { endpoints: [] } })
       }
       const endpoints = await protocol.discover()
       assert(Array.isArray(endpoints))
@@ -39,7 +39,7 @@ describe('protocol/v2', () => {
       }
       await Promise.all(Object.keys(device).map(async key => {
         const dvc = _.omit(device, key)
-        mockResponse({ endpoints: [ dvc ] })
+        mockResponse({ name: 'DiscoveryResponse', payload: { endpoints: [ dvc ] } })
         try {
           await protocol.discover()
           assert.fail('should not succeed')
@@ -50,13 +50,13 @@ describe('protocol/v2', () => {
     })
 
     it('should reject if response status is not 0', async () => {
-      mockResponse({ name: 'ErrorResponse', payload: { code: '101', message: '' } })
+      mockResponse({ name: 'ErrorResponse', payload: { name: '101', message: '' } })
       try {
         await protocol.discover()
         assert.fail('should not succeed')
       } catch (err) {
         assert(err.rawResponse != null)
-        assert(err.rawResponse.payload.code === '101')
+        assert(err.rawResponse.payload.name === '101')
       }
     })
   })
@@ -65,20 +65,18 @@ describe('protocol/v2', () => {
     it('request shall fit in schema', async () => {
       requestMock = async (url, data) => {
         assert(data != null)
-        assert(Array.isArray(data.endpoints))
-        assert(data.endpoints[0].states != null)
-        assert(data.endpoints[0].additionalInfo != null)
+        assert(data.endpoint != null)
+        assert(typeof data.endpoint.endpointId === 'string')
+        assert(data.endpoint.states != null)
+        assert(data.endpoint.additionalInfo != null)
         assert(data.header != null)
         assert(data.header.authentication != null)
-        assert(data.header.authentication.type === 'Bearer')
+        assert(data.header.authentication.type === 'BearerToken')
         assert(data.header.authentication.token === 'bar')
-        return constructMessage({ namespace: 'Rokid', name: 'Response', endpoints: data.endpoints })
+        return constructMessage({ namespace: 'Rokid', name: 'Response', endpoint: data.endpoint })
       }
-      const endpoints = await protocol.control('Switch.On', [
-        { endpointId: '123', additionalInfo: {}, states: [] }
-      ], {})
-      assert(Array.isArray(endpoints))
-      assert(endpoints.length === 1)
+      const endpoint = await protocol.control('Switch.On', { endpointId: '123', additionalInfo: {}, states: [] }, {})
+      assert(endpoint != null)
     })
   })
 
@@ -86,29 +84,27 @@ describe('protocol/v2', () => {
     it('request shall fit in schema', async () => {
       requestMock = async (url, data) => {
         assert(data != null)
-        assert(Array.isArray(data.endpoints))
-        assert(data.endpoints[0].states != null)
-        assert(data.endpoints[0].additionalInfo != null)
+        assert(data.endpoint != null)
+        assert(typeof data.endpoint.endpointId === 'string')
+        assert(data.endpoint.states != null)
+        assert(data.endpoint.additionalInfo != null)
         assert(data.header != null)
         assert(data.header.authentication != null)
-        assert(data.header.authentication.type === 'Bearer')
+        assert(data.header.authentication.type === 'BearerToken')
         assert(data.header.authentication.token === 'bar')
-        return constructMessage({ namespace: 'Rokid', name: 'Response', endpoints: data.endpoints })
+        return constructMessage({ namespace: 'Rokid', name: 'Response', endpoint: data.endpoint })
       }
-      const endpoints = await protocol.query([
-        { endpointId: '123', additionalInfo: {}, states: [] }
-      ])
-      assert(Array.isArray(endpoints))
-      assert(endpoints.length === 1)
+      const endpoint = await protocol.query({ endpointId: '123', additionalInfo: {}, states: [] })
+      assert(endpoint != null)
     })
   })
 
-  function mockResponse ({ name = 'Response', endpoints = [], payload = {} }) {
+  function mockResponse ({ name = 'Response', endpoint = {}, payload = {} }) {
     requestMock = async () => {
       return constructMessage({
         namespace: 'Rokid',
         name,
-        endpoints,
+        endpoint,
         payload
       })
     }

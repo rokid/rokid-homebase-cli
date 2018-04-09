@@ -23,7 +23,22 @@
       ]
     },
     "payload": {
-      "type": "object"
+      "anyOf": [
+        {
+          "type": "object"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
+          }
+        }
+      ]
     }
   }
 }

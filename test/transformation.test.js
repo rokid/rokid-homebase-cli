@@ -22,21 +22,21 @@ describe('transformation.test.js', () => {
           },
           'capabilities': [
             {
-              'interface': 'Switch',
+              'interface': 'switch',
               'supportedOperations': [
                 'on',
                 'off'
               ]
             },
             {
-              'interface': 'Color',
+              'interface': 'color',
               'supportedOperations': [
                 'random',
                 'num'
               ]
             },
             {
-              'interface': 'Brightness',
+              'interface': 'brightness',
               'supportedOperations': [
                 'up',
                 'down',
@@ -46,17 +46,17 @@ describe('transformation.test.js', () => {
               ]
             }
           ],
-          'state': [
+          'states': [
             {
-              'interface': 'Switch',
+              'interface': 'switch',
               'value': 'off'
             },
             {
-              'interface': 'Color',
+              'interface': 'color',
               'value': 255
             },
             {
-              'interface': 'Brightness',
+              'interface': 'brightness',
               'value': 0
             }
           ]
