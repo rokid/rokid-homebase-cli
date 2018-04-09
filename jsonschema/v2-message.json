@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "properties": {
+    "header": {
+      "$ref": "/v2-header"
+    },
+    "endpoint": {
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "endpointId",
+            "additionalInfo",
+            "states"
+          ]
+        },
+        {
+          "$ref": "/v2-endpoint"
+        }
+      ]
+    },
+    "payload": {
+      "type": "object"
+    }
+  }
+}

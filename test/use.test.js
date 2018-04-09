@@ -1,6 +1,6 @@
-const expect = require('chai').expect
+const assert = require('assert')
 const db = require('../lib/db')
-const use = require('../command/use')
+const use = require('../command/session-use')
 
 describe('use', function () {
   beforeEach(function () {
@@ -23,14 +23,14 @@ describe('use', function () {
   it('should not changed if name is not existed', function (done) {
     use('not-existed-name')
     const currentSessionName = db.get('currentSession').value()
-    expect(currentSessionName).to.equal('test')
+    assert(currentSessionName === 'test')
     done()
   })
 
   it('currentSessionName should be changed to name', function (done) {
     use('demo')
     const currentSessionName = db.get('currentSession').value()
-    expect(currentSessionName).to.equal('demo')
+    assert(currentSessionName === 'demo')
     done()
   })
 })

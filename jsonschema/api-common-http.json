@@ -7,7 +7,7 @@
       "minimum": 0
     },
     "data": {
-      "type": "any",
+      "oneOf": [ { "type": "object" }, { "type": "array" } ],
       "description": "data type depended on method of list/get/execute/command"
     },
     "errorName": {

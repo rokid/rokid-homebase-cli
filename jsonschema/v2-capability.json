@@ -1,0 +1,32 @@
+{
+  "$id": "foobar",
+  "type": "object",
+  "required": [
+    "interface",
+    "version",
+    "supportedOperations"
+  ],
+  "properties": {
+    "interface": {
+      "$ref": "/v2-definitions#/definitions/interface"
+    },
+    "version": {
+      "type": "string",
+      "enum": [
+        "v1"
+      ]
+    },
+    "supportedOperations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "isProactivelyReported": {
+      "type": "boolean"
+    },
+    "isRetrievable": {
+      "type": "boolean"
+    }
+  }
+}

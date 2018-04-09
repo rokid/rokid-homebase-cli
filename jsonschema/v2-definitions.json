@@ -1,0 +1,56 @@
+{
+  "definitions": {
+    "interface": {
+      "type": "string",
+      "enum": [
+        "Switch",
+        "Percentage",
+        "Color",
+        "ColorTemperature",
+        "Brightness",
+        "Mode",
+        "SwingMode",
+        "Humidity",
+        "Temperature",
+        "FanSpeed",
+        "Volume",
+        "Media.Music",
+        "Media.TVChannel",
+        "PlaybackControl",
+        "PlaybackMode"
+      ]
+    },
+    "displayType": {
+      "type": "string",
+      "enum": [
+        "curtain",
+        "light",
+        "irController",
+        "socket",
+        "switch",
+        "panel",
+        "tv",
+        "fan",
+        "remoteController",
+        "ac",
+        "airPurifier",
+        "scene",
+        "cleanBot",
+        "projector",
+        "dehumidifier",
+        "humidifier",
+        "thermostat",
+        "door",
+        "floorHeater",
+        "refrigerator",
+        "waterHeater",
+        "lampblackMachine",
+        "washingMachine",
+        "gasStove",
+        "heatingFurnace",
+        "wineCabinet",
+        "speaker"
+      ]
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "endpointId",
+    "additionalInfo"
+  ],
+  "properties": {
+    "endpointId": {
+      "type": "string"
+    },
+    "displayType": {
+      "$ref": "/v2-definitions#/definitions/displayType"
+    },
+    "displayName": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "manufacturerName": {
+      "type": "string"
+    },
+    "modelName": {
+      "type": "string"
+    },
+    "recommendRoomName": {
+      "type": "string"
+    },
+    "offline": {
+      "type": "boolean"
+    },
+    "additionalInfo": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "string",
+            "maxLength": 999
+          }
+        ]
+      },
+      "maxProperties": 100
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "$ref": "/v2-capability"
+      }
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "$ref": "/v2-interface-state"
+      }
+    }
+  }
+}

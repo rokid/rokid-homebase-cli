@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "required": [
+    "interface",
+    "value"
+  ],
+  "properties": {
+    "interface": {
+      "$ref": "/v2-definitions#/definitions/interface"
+    },
+    "value": {
+      "oneOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    },
+    "timeOfSample": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

@@ -1,7 +1,5 @@
 {
   "description": "detail validation of list-api",
   "type": "object",
-  "properties":{
-    "$ref": "/device"
-  }
+  "$ref": "/device"
 }
