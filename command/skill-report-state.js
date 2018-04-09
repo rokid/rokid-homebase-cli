@@ -13,28 +13,29 @@ module.exports = async function (id, command) {
   }
 
   const devicesOfSession = Device.getBySessionName(currentSessionName)
-  const targetDevice = devicesOfSession[id]
 
   if (devicesOfSession.length === 0) {
     console.log('please list first')
     return
   }
 
-  if (id > devicesOfSession.length) {
-    console.log('no such id, please try again')
+  const targetDevice = devicesOfSession.find(it => it.endpointId === id)
+
+  if (targetDevice == null) {
+    console.log('找不到该 endpointId', id)
     return
   }
 
   if (command.local) {
     log.listDevice(targetDevice)
   } else {
-    const [ data ] = await session.request('query', [ targetDevice ])
+    const data = await session.request('query', targetDevice)
     if (command.data) {
       console.log(colors.yellow('response data:'))
       console.log(`${JSON.stringify(data)}\n`)
     }
 
-    Device.updateById(targetDevice.deviceId, currentSessionName, data)
-    log.listDevice(data)
+    Device.updateById(targetDevice.endpointId, currentSessionName, data)
+    log.listDevice(Device.getBySessionName(currentSessionName).find(it => it.endpointId === targetDevice.endpointId))
   }
 }

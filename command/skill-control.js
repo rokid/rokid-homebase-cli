@@ -17,15 +17,15 @@ module.exports = async function skillControl (id, directive, value, command) {
     return
   }
 
-  if (id > devicesOfSession.length) {
-    console.log('no such id, please try again')
+  const targetDevice = devicesOfSession.find(it => it.endpointId === id)
+
+  if (targetDevice == null) {
+    console.log('找不到该 endpointId', id)
     return
   }
 
-  const targetDevice = devicesOfSession[id]
-
-  const [ endpoint ] = await session.request('control', directive, [ targetDevice ], { value })
+  const endpoint = await session.request('control', directive, targetDevice, { value })
 
   Device.updateStateById(targetDevice.deviceId, currentSessionName, targetDevice.state, endpoint.state)
-  console.log(JSON.stringify(endpoint))
+  console.log(JSON.stringify(endpoint, null, 2))
 }

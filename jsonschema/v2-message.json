@@ -4,16 +4,20 @@
     "header": {
       "$ref": "/v2-header"
     },
-    "endpoints": {
-      "type": "array",
-      "items": {
-        "$ref": "/v2-endpoint",
-        "required": [
-          "endpointId",
-          "additionalInfo",
-          "states"
-        ]
-      }
+    "endpoint": {
+      "allOf": [
+        {
+          "type": "object",
+          "required": [
+            "endpointId",
+            "additionalInfo",
+            "states"
+          ]
+        },
+        {
+          "$ref": "/v2-endpoint"
+        }
+      ]
     },
     "payload": {
       "type": "object"

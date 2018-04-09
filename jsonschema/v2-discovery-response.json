@@ -1,0 +1,55 @@
+{
+  "type": "object",
+  "required": [
+    "header",
+    "payload"
+  ],
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "/v2-header"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "enum": [
+                "DiscoveryResponse"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "payload": {
+      "type": "object",
+      "required": [
+        "endpoints"
+      ],
+      "properties": {
+        "endpoints": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "/v2-endpoint"
+              },
+              {
+                "required": [
+                  "endpointId",
+                  "displayType",
+                  "displayName",
+                  "additionalInfo",
+                  "capabilities",
+                  "states"
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

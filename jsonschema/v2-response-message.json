@@ -2,21 +2,25 @@
   "type": "object",
   "required": [
     "header",
-    "endpoints"
+    "endpoint"
   ],
   "properties": {
     "header": {
       "$ref": "/v2-header"
     },
-    "endpoints": {
-      "type": "array",
-      "items": {
-        "$ref": "/v2-endpoint",
-        "required": [
-          "endpointId",
-          "states"
-        ]
-      }
+    "endpoint": {
+      "allOf": [
+        {
+          "$ref": "/v2-endpoint"
+        },
+        {
+          "type": "object",
+          "required": [
+            "endpointId",
+            "states"
+          ]
+        }
+      ]
     },
     "payload": {
       "type": "object"
