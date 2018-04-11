@@ -1,10 +1,10 @@
 # rhome
 
-使用 rhome 工具通过 json schema 来验证 list/execute 接口的返回值来验证接入 Rokid Homebase 协议。
+使用 rhome 工具通过 json schema 来验证 discover|control|report-state 接口的返回值来验证接入 Rokid Homebase 协议。
 
 ## 功能
 
-- 调用 list|get|execute 接口。
+- 调用 discover|control|report-state 接口。
 
 - 使用 jsonshema 对返回的数据格式进行校验，并指出具体错误信息。
 
@@ -17,30 +17,24 @@
 ```
 $ rhome -h
 
-Usage: rhome [options] [command]
-
-
-  Commands:
-
-    serve <path> [port]            transform local driver to server with default port 3000
-    add                            add a remote driver's session
-    del <name>                     delete a remote driver's session
-    sessions                       list all added sessions
-    use <name>                     user an added session
-    list                           list a driver's all devices
-    get <id>                       get one device's current state
-    exec <id> <prop> <name> [val]  execute the device<id> with target action(e.g color num 256)
-    *                              [object Object]
-    help [cmd]                     display help for [cmd]
-
-  show help
+  Usage: rhome [options] [command]
 
   Options:
 
-    -h, --help     output usage information
-    -V, --version  output the version number
-    -b, --body     show response body of list/get/execute
-    -l, --local    list local devices
+    -V, --version                               output the version number
+    -v, --verbose                               show raw response body
+    -h, --help                                  output usage information
+
+  Commands:
+
+    add                                         add a session of remote driver
+    del <name>                                  delete the session of remote driver
+    sessions                                    list all added sessions
+    use <name>                                  user an added session
+
+    discover [options]                          list all devices of a driver
+    control [options] <id> <directive> [value]  execute the device<id> with target action(e.g color num 256)
+    report-state [options] <id>                 get current state of a driver
 ```
 
 * `rhome` 运行后，将在用户目录下新建 **rhome.json** 文件，保存 sessions、devices、currentSession 信息。如有必要，开发者可以进行修改。
@@ -73,7 +67,7 @@ $ rhome add
 * 数据格式正确
 
 ```
-$ rhome list
+$ rhome discover
 
 id: 0
 sessionName: demo
@@ -88,7 +82,7 @@ offline: false
 如有错误，将会显示具体的错误信息，以供参考。
 
 ```
-$ rhome list
+$ rhome discover
 
 body checked by json schema:
 instance does not match allOf schema [subschema 1] with 2 error[s]:
