@@ -33,18 +33,19 @@ $ rhome -h
     use <name>                                  user an added session
 
     discover [options]                          list all devices of a driver
-    control [options] <id> <directive> [value]  execute the device<id> with target action(e.g color num 256)
+    control [options] <endpointId> <directive> [value]  execute the device<id> with target action(e.g Media.TVChannel.Set '{ "tvChannel": { "code": "123" } }')
     report-state [options] <id>                 get current state of a driver
 ```
+
+
+### 步骤 1: 添加 Skill 配置
 
 * `rhome` 运行后，将在用户目录下新建 **rhome.json** 文件，保存 sessions、devices、currentSession 信息。如有必要，开发者可以进行修改。
 * `add` 是交互式命令。 name 必须由 **字母**、**数字** 和 **下划线** 组成。例如: demo_1。 其余为命令行模式。
 * `sessions` 命令显示已添加的所有 session，和显示当前使用的 session。默认使用第一个 session，或通过 `use` 指定。
-* `-b` 显示 list | get | execute 的原始返回。
-* `-l` 显示 **rhome.json** 文件中的当前 session 下的所有设备。
 
-rhome demo:
 
+如：
 ```
 $ rhome add
 
@@ -60,7 +61,39 @@ $ rhome add
 }
 ```
 
-## 数据校验
+### 步骤 2: 搜索设备
+
+在控制设备之前，我们需要先获取 Skill 能控制的设备
+
+```
+$ rhome discover
+
+id: 0
+sessionName: mimic
+endpointId: device-1
+displayName: 大米台灯
+displayType: light
+offline: false
+
+```
+
+### 步骤 3: 控制设备
+
+使用 `control <endpointId> <directive> [payload]` 命令来控制设备，其中 `payload` 为序列化的 JSON 字符串，如 `'{"value": 123}'`
+
+```
+$ rhome control device-1 Switch.On
+
+id: 0
+sessionName: mimic
+endpointId: device-1
+displayName: 大米台灯
+displayType: light
+offline: false
+
+```
+
+#### 数据校验
 
 `rhome` 将对返回数据进行校验，并显示具体的错误信息。
 

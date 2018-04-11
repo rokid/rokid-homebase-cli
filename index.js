@@ -6,11 +6,6 @@ require('./lib/update-manager').checkUpdates()
 const pkg = require('./package.json')
 
 program
-  .command('serve <path> [port]')
-  .description('transform local driver to server with default port 3000')
-  .action(require('./command/serve'))
-
-program
   .command('add')
   .description('add a session of remote driver')
   .action(require('./command/session-add'))
@@ -40,7 +35,7 @@ program
 program
   .command('control <id> <directive> [value]')
   .option('-d, --data', 'show response data of execute')
-  .description('execute the device<id> with target action(e.g color num 256)')
+  .description(`execute the device<id> with target action(e.g Media.TVChannel.Set '{ "tvChannel": { "code": "12" } }")`)
   .action(require('./command/skill-control'))
 
 program
@@ -49,16 +44,6 @@ program
   .option('-d, --data', 'show response data of get')
   .description('get current state of a driver')
   .action(require('./command/skill-report-state'))
-
-program
-  .command('serve <path> [port]')
-  .description('transform local driver to server with default port 3000')
-  .action(require('./command/serve'))
-
-program
-  .command('ssdp')
-  .description('start homebase ssdp broadcast')
-  .action(require('./command/ssdp'))
 
 program
   .version(pkg.version)
