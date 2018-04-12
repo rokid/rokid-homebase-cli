@@ -29,7 +29,7 @@ module.exports = function () {
       type: 'list',
       name: 'protocol',
       message: "remote driver's protocol version",
-      choices: [ 'v1', 'v2' ]
+      choices: [ 'v2' ]
     },
     {
       type: 'input',

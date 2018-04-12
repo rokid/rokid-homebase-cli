@@ -4,7 +4,7 @@
       "type": "string",
       "enum": [
         "Switch",
-        "Percentage",
+        "Position",
         "Color",
         "ColorTemperature",
         "Brightness",

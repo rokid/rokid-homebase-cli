@@ -9,13 +9,13 @@ describe('device', function () {
       displayName: 'demo1',
       endpointId: 'fb02ea22-b0b7-4114-a911-8ce1b97ef3e5',
       displayType: 'light',
-      state: [{
-        interface: 'switch',
-        value: 'on'
+      states: [{
+        interface: 'Switch',
+        value: 'On'
       }],
       capabilities: [{
-        interface: 'switch',
-        supportedOperations: ['on', 'off']
+        interface: 'Switch',
+        supportedOperations: ['On', 'Off']
       }],
       sessionName: 'demo'
     }
@@ -24,13 +24,13 @@ describe('device', function () {
       displayName: 'demo2',
       endpointId: '934ab762-4136-4985-bc69-5c8a69cd7092',
       displayType: 'switch',
-      state: [{
-        interface: 'switch',
-        value: 'on'
+      states: [{
+        interface: 'Switch',
+        value: 'On'
       }],
       capabilities: [{
-        interface: 'switch',
-        supportedOperations: ['on', 'off']
+        interface: 'Switch',
+        supportedOperations: ['On', 'Off']
       }],
       sessionName: 'demo'
     }
@@ -39,13 +39,13 @@ describe('device', function () {
       displayName: 'demo3',
       endpointId: '53a84e15-b855-4348-b4b4-f50795760b72',
       displayType: 'switch',
-      state: [{
-        interface: 'switch',
-        value: 'on'
+      states: [{
+        interface: 'Switch',
+        value: 'On'
       }],
       capabilities: [{
-        interface: 'switch',
-        supportedOperations: ['on', 'off']
+        interface: 'Switch',
+        supportedOperations: ['On', 'Off']
       }],
       sessionName: 'test'
     }
@@ -76,13 +76,13 @@ describe('device', function () {
   describe('#updateStateById()', function () {
     it('state should be updated', function (done) {
       Device.updateStateById('fb02ea22-b0b7-4114-a911-8ce1b97ef3e5', 'demo',
-        [{interface: 'switch', value: 'on'}],
-        [{interface: 'switch', value: 'off'}]
+        [{interface: 'Switch', value: 'On'}],
+        [{interface: 'Switch', value: 'Off'}]
       )
       const dev = db.get('devices')
         .find({endpointId: 'fb02ea22-b0b7-4114-a911-8ce1b97ef3e5'})
         .value()
-      assert(_.find(dev.state, { interface: 'switch' }).value === 'off')
+      assert(_.find(dev.states, { interface: 'Switch' }).value === 'Off')
       done()
     })
   })
@@ -91,14 +91,16 @@ describe('device', function () {
     it('all devices of session should be updated', function (done) {
       const oldDevs = db.get('devices').value()
       const newDevs = oldDevs.map(dev => {
-        _.find(dev.state, { interface: 'switch' }).value = 'off'
+        dev = _.cloneDeep(dev)
+        _.find(dev.states, { interface: 'Switch' }).value = 'Off'
         return dev
       })
       Device.updateOfSession(oldDevs, newDevs, 'demo')
       db
         .get('devices')
         .value()
-        .forEach(dev => assert(_.find(dev.state, { interface: 'switch' }).value === 'off'))
+        .filter(it => it.sessionName === 'demo')
+        .forEach(dev => assert(_.find(dev.states, { interface: 'Switch' }).value === 'Off'))
       done()
     })
   })

@@ -27,6 +27,6 @@ module.exports = async function skillControl (id, directive, value, command) {
 
   const endpoint = await session.request('control', directive, targetDevice, { value })
 
-  Device.updateStateById(targetDevice.deviceId, currentSessionName, targetDevice.state, endpoint.state)
+  Device.updateStateById(targetDevice.endpointId, currentSessionName, targetDevice.states, endpoint.states)
   log.listDevice(Device.getBySessionName(currentSessionName).find(it => it.endpointId === id), { states: true })
 }
