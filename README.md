@@ -127,7 +127,7 @@ instance.data[0].actions.color[1] is not one of enum values: random,num
 instance.data[0] requires property "type"
 ```
 
-#### 步骤 4: 发送终端状态变化事件
+### 步骤 4: 发送终端状态变化事件
 
 使用 `await-event` 命令来启动一个本地接收事件的测试服务器，可以使用如 `-p 7001` 的选项来指定服务器端口。
 
