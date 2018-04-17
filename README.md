@@ -6,7 +6,9 @@
 
 - 调用 discover|control|report-state 接口。
 
-- 使用 jsonshema 对返回的数据格式进行校验，并指出具体错误信息。
+- 使用 jsonschema 对返回的数据格式进行校验，并指出具体错误信息。
+
+- 使用 jsonschema 对 ChangeReport 事件进行校验，并指出具体错误信息。
 
 ## 安装
 
@@ -14,7 +16,7 @@
 
 ## 使用
 
-```
+```bash
 $ rhome -h
 
   Usage: rhome [options] [command]
@@ -33,8 +35,10 @@ $ rhome -h
     use <name>                                  user an added session
 
     discover [options]                          list all devices of a driver
-    control [options] <endpointId> <directive> [value]  execute the device<id> with target action(e.g Media.TVChannel.Set '{ "tvChannel": { "code": "123" } }')
+    control [options] <endpointId> <directive> [value]  execute the device<id> with target action(e.g `Media.TVChannel.Set '{ "tvChannel": { "code": "123" } }'`)
     report-state [options] <id>                 get current state of a driver
+
+    await-event [options]                       serve an event gateway to await change reports
 ```
 
 
@@ -46,7 +50,7 @@ $ rhome -h
 
 
 如：
-```
+```bash
 $ rhome add
 
 ? remote driver's name demo
@@ -65,7 +69,7 @@ $ rhome add
 
 在控制设备之前，我们需要先获取 Skill 能控制的设备
 
-```
+```bash
 $ rhome discover
 
 id: 0
@@ -81,7 +85,7 @@ offline: false
 
 使用 `control <endpointId> <directive> [payload]` 命令来控制设备，其中 `payload` 为序列化的 JSON 字符串，如 `'{"value": 123}'`
 
-```
+```bash
 $ rhome control device-1 Switch.On
 
 id: 0
@@ -99,7 +103,7 @@ offline: false
 
 * 数据格式正确
 
-```
+```bash
 $ rhome discover
 
 id: 0
@@ -121,4 +125,49 @@ body checked by json schema:
 instance does not match allOf schema [subschema 1] with 2 error[s]:
 instance.data[0].actions.color[1] is not one of enum values: random,num
 instance.data[0] requires property "type"
+```
+
+#### 步骤 4: 发送终端状态变化事件
+
+使用 `await-event` 命令来启动一个本地接收事件的测试服务器，可以使用如 `-p 7001` 的选项来指定服务器端口。
+
+```bash
+$ rhome await-event -p 9999
+
+rhome listening on port 9999
+Received a change report: {
+  "header": {
+    "messageId": "5f8a426e-01e4-4cc9-8b79-65f8bd0fd8a4",
+    "namespace": "Rokid",
+    "name": "ChangeReport",
+    "payloadVersion": "v1",
+    "authorization": {
+      "type": "BearerToken",
+      "token": "a-token-from-rokid"
+    }
+  },
+  "endpoint": {
+    "endpointId": "0",
+    "states": [
+      {
+        "interface": "Switch",
+        "value": "On",
+        "timeOfSample": "2018-03-15T18:00:00.000Z"
+      }
+    ]
+  },
+  "payload": {
+    "change": {
+      "cause": "PHYSICAL_INTERACTION"
+    }
+  }
+}
+Caused by: PHYSICAL_INTERACTION
+sessionName: mimic
+endpointId: 0
+displayName: 台灯
+displayType: light
+offline: false
+states:
+  Switch: "On"
 ```

@@ -2,8 +2,7 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "endpointId",
-    "additionalInfo"
+    "endpointId"
   ],
   "properties": {
     "endpointId": {

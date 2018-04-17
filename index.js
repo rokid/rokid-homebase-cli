@@ -46,6 +46,12 @@ program
   .action(require('./command/skill-report-state'))
 
 program
+  .command('await-event')
+  .option('-p, --port <port>', 'server port')
+  .description('serve an event gateway to await change reports')
+  .action(require('./command/event-server'))
+
+program
   .version(pkg.version)
   .option('-v, --verbose', 'show raw response body')
   .parse(process.argv)

@@ -1,0 +1,61 @@
+{
+  "type": "object",
+  "required": [
+    "header",
+    "endpoint",
+    "payload"
+  ],
+  "properties": {
+    "header": {
+      "allOf": [
+        {
+          "$ref": "/v2-header"
+        },
+        {
+          "type": "object",
+          "required": [
+            "authorization"
+          ],
+          "properties": {
+            "name": {
+              "type": "string",
+              "enum": [
+                "ChangeReport"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "endpoint": {
+      "allOf": [
+        {
+          "$ref": "/v2-endpoint"
+        },
+        {
+          "type": "object",
+          "required": [
+            "endpointId",
+            "states"
+          ]
+        }
+      ]
+    },
+    "payload": {
+      "type": "object",
+      "properties": {
+        "change": {
+          "type": "object",
+          "properties": {
+            "cuase": {
+              "type": "string",
+              "enum": [
+                "PHYSICAL_INTERACTION"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
