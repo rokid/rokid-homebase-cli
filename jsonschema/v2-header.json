@@ -25,7 +25,7 @@
     "payloadVersion": {
       "type": "string"
     },
-    "authentication": {
+    "authorization": {
       "type": "object",
       "required": [
         "type",

@@ -19,9 +19,9 @@ describe('protocol/v2', () => {
       requestMock = async (url, data) => {
         assert(data != null)
         assert(data.header != null)
-        assert(data.header.authentication != null)
-        assert(data.header.authentication.type === 'BearerToken')
-        assert(data.header.authentication.token === 'bar')
+        assert(data.header.authorization != null)
+        assert(data.header.authorization.type === 'BearerToken')
+        assert(data.header.authorization.token === 'bar')
         return constructMessage({ namespace: 'Rokid', name: 'DiscoveryResponse', payload: { endpoints: [] } })
       }
       const endpoints = await protocol.discover()
@@ -70,9 +70,9 @@ describe('protocol/v2', () => {
         assert(data.endpoint.states != null)
         assert(data.endpoint.additionalInfo != null)
         assert(data.header != null)
-        assert(data.header.authentication != null)
-        assert(data.header.authentication.type === 'BearerToken')
-        assert(data.header.authentication.token === 'bar')
+        assert(data.header.authorization != null)
+        assert(data.header.authorization.type === 'BearerToken')
+        assert(data.header.authorization.token === 'bar')
         return constructMessage({ namespace: 'Rokid', name: 'Response', endpoint: data.endpoint })
       }
       const endpoint = await protocol.control('Switch.On', { endpointId: '123', additionalInfo: {}, states: [] }, {})
@@ -89,9 +89,9 @@ describe('protocol/v2', () => {
         assert(data.endpoint.states != null)
         assert(data.endpoint.additionalInfo != null)
         assert(data.header != null)
-        assert(data.header.authentication != null)
-        assert(data.header.authentication.type === 'BearerToken')
-        assert(data.header.authentication.token === 'bar')
+        assert(data.header.authorization != null)
+        assert(data.header.authorization.type === 'BearerToken')
+        assert(data.header.authorization.token === 'bar')
         return constructMessage({ namespace: 'Rokid', name: 'Response', endpoint: data.endpoint })
       }
       const endpoint = await protocol.query({ endpointId: '123', additionalInfo: {}, states: [] })

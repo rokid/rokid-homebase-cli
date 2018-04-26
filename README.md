@@ -141,7 +141,7 @@ Received a change report: {
     "namespace": "Rokid",
     "name": "ChangeReport",
     "payloadVersion": "v1",
-    "authentication": {
+    "authorization": {
       "type": "BearerToken",
       "token": "a-token-from-rokid"
     }
