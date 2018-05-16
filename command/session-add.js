@@ -1,6 +1,7 @@
 const inquirer = require('inquirer')
 const { URL } = require('url')
 const Session = require('../lib/session')
+const jwt = require('jsonwebtoken')
 
 module.exports = function () {
   const questions = [
@@ -47,6 +48,18 @@ module.exports = function () {
       }
     },
     {
+      type: 'list',
+      name: 'authType',
+      message: 'remote driver\'s auth type',
+      choices: [ {
+        name: 'OAuth 2.0',
+        value: 'rfc6749'
+      }, {
+        name: 'JSON Web Token (JWT)',
+        value: 'rfc7519'
+      } ]
+    },
+    {
       type: 'input',
       name: 'userId',
       message: 'userId in userAuth. If null, skip'
@@ -54,12 +67,38 @@ module.exports = function () {
     {
       type: 'input',
       name: 'userToken',
-      message: 'userToken in userAuth. If null, skip'
+      message: 'userToken in userAuth. If null, skip',
+      when: ({ authType }) => authType === 'rfc6749'
+    },
+    {
+      type: 'input',
+      name: 'appId',
+      message: 'appId in remote driver\'s config. If null, skip',
+      when: ({ authType }) => authType === 'rfc7519'
+    },
+    {
+      type: 'input',
+      name: 'appSecret',
+      message: 'appSecret in remote driver\'s config. If null, skip',
+      when: ({ authType }) => authType === 'rfc7519'
     }
   ]
 
   inquirer.prompt(questions).then(function (answers) {
     console.log(JSON.stringify(answers, null, 2))
+
+    if (answers.authType === 'rfc7519') {
+      if (answers.userId && answers.appId && answers.appSecret) {
+        answers.userToken = jwt.sign({
+          userId: answers.userId,
+          appId: answers.appId
+        }, answers.appSecret, {
+          expiresIn: '365 days'
+        })
+      } else {
+        answers.userToken = ''
+      }
+    }
 
     const newSession = {
       name: answers.name,
