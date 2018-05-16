@@ -1,7 +1,6 @@
 const inquirer = require('inquirer')
 const { URL } = require('url')
 const Session = require('../lib/session')
-const jwt = require('jsonwebtoken')
 
 module.exports = function () {
   const questions = [
@@ -52,10 +51,10 @@ module.exports = function () {
       name: 'authType',
       message: 'remote driver\'s auth type',
       choices: [ {
-        name: 'OAuth 2.0',
+        name: 'OAuth 2.0 授权',
         value: 'rfc6749'
       }, {
-        name: 'JSON Web Token (JWT)',
+        name: '基于 JWT 签名的服务端授权',
         value: 'rfc7519'
       } ]
     },
@@ -87,19 +86,6 @@ module.exports = function () {
   inquirer.prompt(questions).then(function (answers) {
     console.log(JSON.stringify(answers, null, 2))
 
-    if (answers.authType === 'rfc7519') {
-      if (answers.userId && answers.appId && answers.appSecret) {
-        answers.userToken = jwt.sign({
-          userId: answers.userId,
-          appId: answers.appId
-        }, answers.appSecret, {
-          expiresIn: '365 days'
-        })
-      } else {
-        answers.userToken = ''
-      }
-    }
-
     const newSession = {
       name: answers.name,
       endpoint: answers.endpoint,
@@ -107,6 +93,15 @@ module.exports = function () {
       userAuth: {
         userId: answers.userId,
         userToken: answers.userToken
+      }
+    }
+
+    if (answers.authType === 'rfc7519') {
+      newSession.userAuth.userToken = ''
+      newSession.authType = answers.authType
+      newSession.config = {
+        appId: answers.appId,
+        appSecret: answers.appSecret
       }
     }
 
