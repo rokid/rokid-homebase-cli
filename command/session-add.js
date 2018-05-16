@@ -47,6 +47,18 @@ module.exports = function () {
       }
     },
     {
+      type: 'list',
+      name: 'authType',
+      message: 'remote driver\'s auth type',
+      choices: [ {
+        name: 'OAuth 2.0 授权',
+        value: 'rfc6749'
+      }, {
+        name: '基于 JWT 签名的服务端授权',
+        value: 'rfc7519'
+      } ]
+    },
+    {
       type: 'input',
       name: 'userId',
       message: 'userId in userAuth. If null, skip'
@@ -54,7 +66,20 @@ module.exports = function () {
     {
       type: 'input',
       name: 'userToken',
-      message: 'userToken in userAuth. If null, skip'
+      message: 'userToken in userAuth. If null, skip',
+      when: ({ authType }) => authType === 'rfc6749'
+    },
+    {
+      type: 'input',
+      name: 'appId',
+      message: 'appId in remote driver\'s config. If null, skip',
+      when: ({ authType }) => authType === 'rfc7519'
+    },
+    {
+      type: 'input',
+      name: 'appSecret',
+      message: 'appSecret in remote driver\'s config. If null, skip',
+      when: ({ authType }) => authType === 'rfc7519'
     }
   ]
 
@@ -68,6 +93,15 @@ module.exports = function () {
       userAuth: {
         userId: answers.userId,
         userToken: answers.userToken
+      }
+    }
+
+    if (answers.authType === 'rfc7519') {
+      newSession.userAuth.userToken = ''
+      newSession.authType = answers.authType
+      newSession.config = {
+        appId: answers.appId,
+        appSecret: answers.appSecret
       }
     }
 
