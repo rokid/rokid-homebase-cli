@@ -23,7 +23,10 @@
       "type": "string"
     },
     "payloadVersion": {
-      "type": "string"
+      "type": "string",
+      "enum": [
+        "v1"
+      ]
     },
     "authorization": {
       "type": "object",
